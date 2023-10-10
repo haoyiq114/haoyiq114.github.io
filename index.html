@@ -1,0 +1,464 @@
+<!DOCTYPE HTML>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <title>Haoyi Qiu</title>
+  
+  <meta name="author" content="Jon Barron">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+</head>
+
+<body>
+  <table style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+    <tr style="padding:0px">
+      <td style="padding:0px">
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+          <tr style="padding:0px">
+            <td style="padding:2.5%;width:63%;vertical-align:middle">
+              <p style="text-align:center">
+                <name>Haoyi Qiu</name>
+              </p>
+              <p>I am a a second-year master's student in Computer Science at the <a href="https://www.ucla.edu/">University of California, Los Angeles</a>. I’m fortunate to be advised by Professor <a href="https://vnpeng.net/">Nanyun (Violet) Peng</a> and to be a member of <a href="https://vnpeng.net/group/">Peng's Language Understanding & Synthesis Lab (PLUS)</a>.
+                 Before, I graduated from the <a href="https://umich.edu/">University of Michigan, Ann Arbor</a>, with a Bachelor of Science in Computer Science, Pure Mathematics, and Statistics. I joined <a href="https://sled.eecs.umich.edu/">Situated Language and Embodied Dialogue</a> lab as an undergraduate research assistant advised by Professor <a href="https://web.eecs.umich.edu/~chaijy/">Joyce Y. Chai</a>.
+              </p>
+              <p>
+                My current research focuses on multimodality (vision and language), model evaluation (factuality, faithfulness, trustworthiness), Fairness and Bias Some of my projects and publications related to these fields are demonstrated below.
+              </p>
+              <p style="text-align:center">
+                Email: haoyiqiu@g.ucla.edu&nbsp/&nbsp
+                <a href="">CV</a> &nbsp/&nbsp
+              </p>
+            </td>
+            <td style="padding:2.5%;width:30%;max-width:30%">
+              <img style="width:80%;max-width:80%" alt="profile photo" src="images/Haoyi.png" class="hoverZoomLink">
+            </td>
+          </tr>
+        </tbody></table>
+
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+            <td style="padding:20px;width:100%;vertical-align:middle">
+              <heading>Research Projects</heading>
+              <!-- <p>
+                * indicates authors with equal contributions.
+              </p> -->
+            </td>
+          </tr>
+        </tbody></table>
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:35%;vertical-align:middle">
+              <div class="one">
+                <img src='images/SpatialTemporal.png' width="240">
+              </div>
+            </td>
+            <td style="padding:20px;width:65%;vertical-align:middle">
+              <a href="http://arxiv.org/abs/2304.03869.pdf">
+                <papertitle>Harnessing the Spatial-Temporal Attention of Diffusion Models for High-Fidelity Text-to-Image Synthesis</papertitle>
+              </a>
+              <br>
+              <strong>Qiucheng Wu</strong>*, Yujian Liu*, Handong Zhao, Trung Bui, Zhe Lin, Yang Zhang, Shiyu Chang
+              <br>
+              <em>ICCV</em>, 2023 <a href="https://github.com/UCSB-NLP-Chang/Diffusion-SpaceTime-Attn">[Code]</a>
+              <br>
+              <p></p>
+              <p>
+                We propose a new text-to-image algorithm with explicit control over cross-attention in diffusion models from spatial and temporal views. This alleviates inconsistencies between images and text and helps to fix errors like missing objects, mismatched attributes, and mislocated objects. 
+              </p>
+            </td>
+          </tr>
+          <!-- <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:35%;vertical-align:middle">
+              <div class="one">
+                <img src='images/diffusiondisentangle.png' width="240">
+              </div>
+            </td>
+            <td style="padding:20px;width:65%;vertical-align:middle">
+              <a href="https://arxiv.org/pdf/2212.08698.pdf">
+                <papertitle>Uncovering the Disentanglement Capability in Text-to-Image Diffusion Models</papertitle>
+              </a>
+              <br>
+              <strong>Qiucheng Wu</strong>, Yujian Liu, Handong Zhao, Ajinkya Kale, Trung Bui, Tong Yu, Zhe Lin, Yang Zhang, Shiyu Chang
+              <br>
+              <em>CVPR</em>, 2023 <a href="https://github.com/UCSB-NLP-Chang/DiffusionDisentanglement">[Code]</a> <a href="https://wuqiuche.github.io/DiffusionDisentanglement-project-page/">[Demo]</a>
+              <br>
+              <p></p>
+              <p>
+                Based on a fixed stable diffusion model, we disentangle target attributes from a single training image. The learned parameters can then be applied to unseen images and achieve same edits. This finding leads to a lightweight image editing framework with only 50 learnable parameters.
+              </p>
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:35%;vertical-align:middle">
+              <div class="one">
+                <img src='images/adadeblur.png' width="240">
+              </div>
+            </td>
+            <td style="padding:20px;width:65%;vertical-align:middle">
+              <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10254493">
+                <papertitle>Broad Spectrum Image Deblurring via An Adaptive Super-Network</papertitle>
+              </a>
+              <br>
+              <strong>Qiucheng Wu*</strong>, Yifan Jiang*, Junru Wu*, Victor Kulikov, Vidit Goel, Nikita Orlov, Humphrey Shi, Zhangyang Wang, Shiyu Chang 
+              <br>
+              <em>IEEE Transactions on Image Processing (TIP)</em>, 2023<a href="https://github.com/wuqiuche/Ada-Deblur"> [Code]</a>
+              <br>
+              <p></p>
+              <p>
+                We propose Ada-Deblur, a super-network that can be applied to a "broad spectrum" of various blur levels with no re-training on novel blurs.
+              </p>
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:35%;vertical-align:middle">
+              <div class="one">
+                <img src='images/grasping.png' width="240">
+              </div>
+            </td>
+            <td style="padding:20px;width:65%;vertical-align:middle">
+              <a href="https://arxiv.org/pdf/2204.12696.pdf">
+                <papertitle>Grasping the Arrow of Time from the Singularity: Decoding Micromotion in Low-dimensional Latent Spaces from StyleGAN</papertitle>
+              </a>
+              <br>
+              <strong>Qiucheng Wu*</strong>, Yifan Jiang*, Junru Wu*, Kai Wang, Gong Zhang, Humphrey Shi, Zhangyang Wang, Shiyu Chang
+              <br>
+              <em>Arxiv</em>, 2022 <a href="https://github.com/wuqiuche/micromotion-styleGAN">[Code]</a> <a href="https://wuqiuche.github.io/micromotion-project-page/">[Demo]</a>
+              <br>
+              <p></p>
+              <p>
+                
+              </p>
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:35%;vertical-align:middle">
+              <div class="one">
+                <img src='images/TemporalFiltering.png' width="240">
+              </div>
+            </td>
+            <td style="padding:20px;width:65%;vertical-align:middle">
+              <a href="https://arxiv.org/pdf/2212.08698.pdf">
+                <papertitle>Temporal Frame Filtering with Near-Pixel Compute for Autonomous Driving</papertitle>
+              </a>
+              <br>
+              Wantong Li, <strong>Qiucheng Wu</strong>, Janak Sharda, Shiyu Chang, Shimeng Yu
+              <br>
+              <em>IEEE 4th International Conference on Artificial Intelligence Circuits and Systems (AICAS)</em>, 2022
+              <br>
+              <p></p>
+              <p>
+
+              </p>
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:35%;vertical-align:middle">
+              <div class="one">
+                <img src='images/tridesign.png' width="240">
+              </div>
+            </td>
+            <td style="padding:20px;width:65%;vertical-align:middle">
+              <a href="https://dl.acm.org/doi/pdf/10.1145/3566097.3567864">
+                <papertitle>Data-Model-Circuit Tri-Design for Ultra-Light Video Intelligence on Edge Devices</papertitle>
+              </a>
+              <br>
+              Yimeng Zhang*, Akshay Karkal Kamath*, <strong>Qiucheng Wu</strong>*, Zhiwen Fan*, Wuyang Chen, Zhangyang Wang, Shiyu Chang, Sijia Liu, Cong Hao
+              <br>
+              <em>Proceedings of the 28th Asia and South Pacific Design Automation Conference</em>, 2023
+              <br>
+              <p></p>
+              <p>
+
+              </p>
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <img src='images/ActionTranslator.png' width="240">
+              </div>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <a href="https://ojs.aaai.org/index.php/AAAI/article/view/20635">
+                <papertitle>Learning Action Translator for Meta Reinforcement Learning on Sparse Rewards Tasks</papertitle>
+              </a>
+              <br>
+              Yijie Guo, <strong>Qiucheng Wu</strong>, Honglak Lee
+              <br>
+              <em>AAAI</em>, 2022
+              <br>
+              <p></p>
+              <p>
+                Meta reinforcement learning requires substantial amounts of data. To improve the sample efficiency and performance of metal-RL algorithms on sparse-reward tasks, we introduce a novel objective function to learn an action translator among training tasks.
+              </p>
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <img src='images/SifterText.png' width="240">
+              </div>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle"> 
+              <a href="https://link.springer.com/article/10.1007/s10916-022-01880-6">
+                <papertitle>DataSifterText: Partially Synthetic Text Generation for Sensitive Clinical Notes</papertitle>
+              </a>
+              <br>
+              Nina Zhou, <strong>Qiucheng Wu</strong>, Zewen Wu, Simeone Marino, and Ivo Dinov
+              <br>
+              <em>Journal of Medical Systems</em>, 2022 
+              <br>
+              <p></p>
+              <p>
+                We propose DataSifter-Text to protect privacy of sensitive textual dataset. The DataSifter-Text obfuscates identifiable information in the dataset. It effectively balances between privacy and utility.
+              </p>
+            </td>
+          </tr> 
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <img src='images/CBDA.png' width="240">
+              </div>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0228520">
+                <papertitle>Compressive Big Data Analytics: An ensemble meta-algorithm for high-dimensional multisource datasets</papertitle>
+              </a>
+              <br>
+              Simeone Marino, Yi Zhao, Nina Zhou, Yiwang Zhou, Arthur W. Toga, Lu Zhao, Yingsi Jian, Yichen Yang, Yehu Chen, <strong>Qiucheng Wu</strong>, Jessica Wild, Brandon Cummings, Ivo D. Dinov
+              <br>
+              <em>PLOS One</em>, 2020 
+              <br>
+              <p></p>
+              <p>
+                We apply the compressive big data analytics (CBDA) to analyze sailent features and key biomarkers of a high-dimensional dataset.
+              </p>
+              <p></p>
+              <p>
+                Most Likely Health Impact in 4th Annual Symposium Poster Competition in Michigan Institute for Data Science, University of Michigan.
+              </p>
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <img src='images/Sifter.png' width="260">
+              </div>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <a href="https://www.tandfonline.com/doi/full/10.1080/00949655.2018.1545228">
+                <papertitle>DataSifter: Statistical Obfuscation of Electronic Health Records and Other Sensitive Datasets</papertitle>
+              </a>
+              <br>
+              Simeone Marino, Nina Zhou, Yi Zhao, Lu Wang, <strong>Qiucheng Wu</strong>, Ivo D. Dinov
+              <br>
+              <em>Journal of Statistical Computation and Simulation</em>, 2019
+              <br>
+              <p></p>
+              <p>
+                We propose the DataSifter to obfuscate sensitivie dataset while preserve the utility for other researches.
+              </p>
+              <p></p>
+              <p>
+                Most Interesting Methodological Advances in 4th Annual Symposium Poster Competition in Michigan Institute for Data Science, University of Michigan.
+              </p>
+            </td>
+          </tr> -->
+        </tbody></table>
+
+
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+            <td style="padding:20px;width:100%;vertical-align:middle">
+              <heading>Education Experience</heading>
+            </td>
+          </tr>
+        </tbody></table>
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:100%;vertical-align:middle">
+              <strong>UC Santa Barbara</strong>
+              <br>
+              3rd year Ph.D. student, Sep 2021 - Current
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:100%;vertical-align:middle">
+              <strong>University of Michigan</strong>
+              <br>
+              Masters, Computer Science and Engineering, Sep 2019 - May 2021
+              <br>
+              Bachelor, Computer Science, Sep 2017 - May 2019
+              <br>
+              GPA: 3.94/4.00
+              <br>
+              <strong>Major Focuses</strong>
+                    <li>Natrual Language Processing</li>
+                    <li>Deep Learning for Vision</li>
+                    <li>Data Mining & Advanced Data Mining</li>
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:100%;vertical-align:middle">
+              <strong>Shanghai Jiao Tong University</strong>
+              <br>
+              Bachelor, Electircal and Computer Engineering, Sep 2015 - Aug 2019
+              <br>
+              GPA: 3.67/4.00
+              <br>
+              Undergraduate Capstone Team Gold Prize (2019)
+            </td>
+          </tr> 
+        </tbody></table>
+
+
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+            <td style="padding:20px;width:100%;vertical-align:middle">
+              <heading>Teaching Experience</heading>
+            </td>
+          </tr>
+        </tbody></table>
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:95%;vertical-align:middle">
+              <strong>Teaching Assistant: Machine Learning</strong> (CMPSC 165B)
+              <br>
+              UCSB, FA 2021
+              <br>
+              Leading discussions, design homework, grade exams, help students in office hours.
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:95%;vertical-align:middle">
+              <strong>Teaching Assistant: Intro to AI</strong> (EECS 492)
+              <br>
+              University of Michigan, FA 2020 and WN 2021
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:95%;vertical-align:middle">
+              <strong>Teaching Assistant: Applied Honors Calculus</strong> (Vv156, equivalent to MATH 156 in umich)
+              <br>
+              UM-SJTU Joint Institute, Shanghai Jiao Tong University, FA 2016
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:95%;vertical-align:middle">
+              Also I was a grader on Data Mining (EECS 476), Deep Learning (EECS 498), Intro to AI (EECS 592), Applied Linear Algebra (MATH 214), Intro to Computer Organization (EECS 370) for at least 1 semester.
+            </td>
+          </tr>
+        </tbody></table>
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+            <td style="padding:20px;width:100%;vertical-align:middle">
+              <heading>Working Experience</heading>
+            </td>
+          </tr>
+        </tbody></table>
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <img src='images/adobe.png' width="100">
+              </div>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <strong>Adobe</strong>
+              <br>
+              Research Scientist Intern
+              <br>
+              Jun. 2023 - Sep. 2023
+              <p></p>
+              In this internship, I studied how to enable text-guided image editing via professional editing tools like Photoshop leveraging the state-of-the-art large language models.
+            </td>
+          </tr>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <img src='images/picsart.jpg' width="100">
+              </div>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <strong>Picsart</strong>
+              <br>
+              PhD Research Intern
+              <br>
+              Jun. 2022 - Sep. 2022
+              <p></p>
+              In this internship, I studied beyond the state-of-the-art image deblurring methods and controllable image generation using GANs.
+            </td>
+          </tr> 
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <img src='images/Fitly.png' width="100">
+              </div>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <strong>Fitly</strong>
+              <br>
+              Machine Learning Intern
+              <br>
+              Nov. 2019 - Apr. 2020
+              <p></p>
+              In this internship, I designed and implemented a personalized model to provide more accurate food classification results for users.
+            </td>
+          </tr> 
+        </tbody></table>
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+            <td style="padding:20px;width:100%;vertical-align:middle">
+              <heading>Others</heading>
+            </td>
+          </tr>
+        </tbody></table>
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
+            <td style="padding:20px;width:25%;vertical-align:middle">
+              <div class="one">
+                <img src='images/IntelAkraino.png' width="160">
+              </div>
+              <script type="text/javascript">
+                function lssr_start() {
+                  document.getElementById('lssr_image').style.opacity = "1";
+                }
+
+                function lssr_stop() {
+                  document.getElementById('lssr_image').style.opacity = "0";
+                }
+                lssr_stop()
+              </script>
+            </td>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+                <papertitle>Intel Akraino: Edge Cloud Game Architecture</papertitle>
+              <br>
+              <strong>Undergraduate Capstone Team Gold Prize</strong>
+              <br>
+              UM-SJTU Joint Institute, Shanghai Jiao Tong University,
+              August 2019
+              <p></p>
+              <p>
+                In this capstone project, we designed a framework to boost web communications between terminal devices and servers by introducing edge servers. We use kubernets to organize edge servers as different containers. The edge servers are responsible for computing and sending information to terminal devices, leading to more efficient performance.
+              </p>
+            </td>
+          </tr> 
+        </tbody></table>
+
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+          <tr>
+            <td style="padding:0px">
+               <br>
+               <p style="text-align:right;font-size:small;">
+                This website is built using the source code from Jon Barron's <a href="https://jonbarron.info/">public academic website</a>. 
+              </p>
+            </td>
+          </tr>
+        </tbody></table>
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>
