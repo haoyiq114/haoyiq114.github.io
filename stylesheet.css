@@ -66,3 +66,42 @@ name {
 span.highlight {
   background-color: #ffffd0;
 }
+
+/* Project figure: trimmed image, uniform box height (rows line up), no border */
+.project-fig {
+  width: 100%;
+  aspect-ratio: 3 / 2;     /* same box height everywhere -> rows align */
+  object-fit: contain;     /* show the whole (trimmed) image, no cropping */
+  object-position: center; /* center it within the box */
+}
+
+/* Collapsible abstract toggle */
+details.abstract {
+  margin-top: 6px;
+}
+
+details.abstract > summary {
+  cursor: pointer;
+  color: #1772d0;
+  font-weight: 600;
+  list-style: none;
+  display: inline-block;
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 17px;
+}
+
+details.abstract > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.abstract > summary::before {
+  content: "\25B8\00a0";
+}
+
+details.abstract[open] > summary::before {
+  content: "\25BE\00a0";
+}
+
+details.abstract > summary:hover {
+  color: #f09228;
+}
