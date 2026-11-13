@@ -42,6 +42,10 @@ name {
   font-size: 32px;
 }
 
+.contact-links a {
+  white-space: nowrap;
+}
+
 .one {
   width: 160px;
   height: 160px;

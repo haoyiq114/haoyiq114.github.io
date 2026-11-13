@@ -25,10 +25,10 @@
               <p>I am a third-year PhD candidate in Computer Science at <a href="https://www.ucla.edu/">UCLA</a> advised by Prof. <a href="https://violetpeng.github.io/">Nanyun (Violet) Peng</a>. Before, I graduated from the <a href="https://umich.edu/">University of Michigan</a>, with a B.S. in Computer Science and Pure Math, advised by Prof. <a href="https://web.eecs.umich.edu/~chaijy/">Joyce Y. Chai</a>.
               </p>
               <p>
-                My research focuses on evaluating and improving the <b><font color="blue">reasoning</font></b>, <b><font color="purple">safety</font></b>, and <b><font color="orange">social behavior</font></b> of multimodal AI systems and agents.
+                My research focuses on evaluating and improving the <b><font color="blue">reasoning</font></b>, <b><font color="purple">safety</font></b>, and <b><font color="orange">social behavior</font></b> of language models, multimodal systems, and AI agents.
               </p>
               <ul>
-                <li>How can we evaluate and improve multimodal reasoning beyond perceptual accuracy and generation quality? (<a href="https://arxiv.org/pdf/2512.14691">MMGR</a>, <a href="https://arxiv.org/pdf/2502.11492">CogAlign</a>)</li>
+                <li>What limits reasoning in language and multimodal models, and when does training overcome those limits? (<a href="https://arxiv.org/pdf/2611.16064v1">OPSD Audit</a>, <a href="https://arxiv.org/pdf/2512.14691">MMGR</a>, <a href="https://arxiv.org/pdf/2502.11492">CogAlign</a>)</li>
                 <li>How can we align AI systems for safety across diverse cultural contexts while reducing social biases? (<a href="https://openreview.net/pdf?id=VZQmIoDGBG">SafeWorld</a>, <a href="https://arxiv.org/pdf/2505.14972">CROSS</a>, <a href="https://arxiv.org/pdf/2410.23252">CASA</a>, <a href="https://arxiv.org/pdf/2510.17247">VideoBiasEval</a>)</li>
                 <li>How do multimodal communication and agent interactions shape beliefs and decisions, and when do they amplify misinformation or enable manipulation? (<a href="https://arxiv.org/pdf/2510.22768">MMPersuade</a>, <a href="https://arxiv.org/pdf/2608.25152">Belief Cascades</a>)</li>
               </ul>
@@ -36,14 +36,17 @@
                 I have been recognized with the Amazon Fellowship (2026), the <a href="https://commencement.seas.ucla.edu/2025-awards/">Outstanding Graduate MS Student Award</a> from UCLA CS Department (2025), and the <a href="https://2023.emnlp.org/program/outstanding_reviewers/">Outstanding Reviewer Award</a> at EMNLP 2023 (top 0.74%).
               </p>
               <p>
-                If you're interested in my research, potential collaborations, or simply want to catch up, feel free to drop me an email.
+                <strong style="color:#b42318;">I am seeking internship and full-time industry opportunities for 2027.</strong>
               </p>
-              <p style="text-align:center">
-                Email: haoyiqiu@g.ucla.edu 💌&nbsp/&nbsp
+              <p>
+                If you know of opportunities that could be a good fit, please feel free to <a href="mailto:haoyiqiu@g.ucla.edu">reach out</a>. I'm also happy to discuss research, explore collaborations, or catch up.
+              </p>
+              <p class="contact-links" style="text-align:center">
+                <a href="mailto:haoyiqiu@g.ucla.edu" title="haoyiqiu@g.ucla.edu">Email 💌</a> &nbsp;/&nbsp;
                 <!-- <a href="data/Haoyi_CV_short.pdf">CV</a> &nbsp/&nbsp -->
-                <a href="https://scholar.google.com/citations?user=vQd32CIAAAAJ&hl=en">Google Scholar 👩🏻‍🎓</a> &nbsp/&nbsp
-                <a href="https://twitter.com/HaoyiQiu">Twitter 📝</a> &nbsp/&nbsp
-                <a href="https://www.instagram.com/7u7u_life_recorder/">Life 🌷</a> &nbsp/&nbsp
+                <a href="https://scholar.google.com/citations?user=vQd32CIAAAAJ&hl=en">Google Scholar 👩🏻‍🎓</a> &nbsp;/&nbsp;
+                <a href="https://twitter.com/HaoyiQiu">Twitter 📝</a> &nbsp;/&nbsp;
+                <a href="https://www.instagram.com/7u7u_life_recorder/">Life 🌷</a>
               </p>
             </td>
             <td style="padding:2.5%;width:30%;max-width:30%">
@@ -63,6 +66,27 @@
           </tr>
         </tbody></table>
         <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+          <tr>
+            <td style="padding:10px;width:33%;vertical-align:top">
+              <img src='images/opsd_intro.png' class="project-fig" alt="Figure 1(a): Training and evaluation thinking modes across Qwen3 model scales">
+            </td>
+            <td style="padding:10px;width:67%;vertical-align:top">
+              <a href="https://arxiv.org/pdf/2611.16064v1">
+                <papertitle>Privileged Information Does Not Guarantee Privileged Guidance: Auditing On-Policy Self-Distillation for Reasoning Models</papertitle>
+              </a>
+              <br>
+              <u><strong>Haoyi Qiu</strong></u>, Akshat Agarwal
+              <br>
+              <span style="color: red; font-style: italic;">arXiv, 2026</span>
+              <br>
+              <details class="abstract">
+                <summary>Abstract</summary>
+                <p style="margin-top:5px;margin-bottom:0px;">
+                  <em>We audit on-policy self-distillation across four stages of reasoning transfer: Source, Encoding, Transmission, and Expression. Across three Qwen3 scales, privileged solutions improve teacher solving and recovery but do not reliably yield useful supervision or independent student reasoning. Controlled comparisons show that the largest gains track the teacher's thinking mode, with problem-only teachers often matching or outperforming teachers given solutions. We call this pattern reasoning arbitrage, highlighting why accuracy gains alone cannot establish reasoning transfer from privileged information.</em>
+                </p>
+              </details>
+            </td>
+          </tr>
           <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
             <td style="padding:10px;width:33%;vertical-align:top">
               <img src='images/mas_intro.png' class="project-fig" alt="Belief Cascades Drive Persuasion in LLM Agent Networks">
@@ -74,7 +98,7 @@
               <br>
               <u><strong>Haoyi Qiu*</strong></u>, Genglin Liu*, Pranav Narayanan Venkit, Kung-Hsiang Huang, Saadia Gabriel, Chien-Sheng Wu, Nanyun Peng
               <br>
-              <span style="color: red; font-style: italic;">In Submission, 2026</span>
+              <span style="color: red; font-style: italic;">Arxiv, 2026</span>
               <br>
               <details class="abstract">
                 <summary>Abstract</summary>
