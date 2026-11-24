@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Haoyi Qiu</title>
 <meta name="author" content="Haoyi Qiu">
-<meta name="description" content="Haoyi Qiu, PhD candidate in Computer Science at UCLA. Research on the reasoning, safety, and social behavior of language models, multimodal systems, and AI agents.">
+<meta name="description" content="Haoyi Qiu, PhD candidate in Computer Science at UCLA. Research on post-training, multi-agent systems, and the safety of language models, multimodal systems, and AI agents.">
 <meta property="og:title" content="Haoyi Qiu">
-<meta property="og:description" content="PhD candidate in Computer Science at UCLA. Research on the reasoning, safety, and social behavior of language models, multimodal systems, and AI agents.">
+<meta property="og:description" content="PhD candidate in Computer Science at UCLA. Research on post-training, multi-agent systems, and the safety of language models, multimodal systems, and AI agents.">
 <meta property="og:type" content="website">
 <link rel="icon" href="images/koala-emoji.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
-<link rel="stylesheet" href="stylesheet.css?v=20261123a">
+<link rel="stylesheet" href="stylesheet.css?v=20261123b">
 <script>try { var t = localStorage.getItem('mk-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
 <body>
@@ -35,7 +35,7 @@
   <div class="hero-text">
     <h1>Haoyi Qiu</h1>
     <p>I am a third-year PhD candidate in Computer Science at <a href="https://www.ucla.edu/">UCLA</a> advised by Prof. <a href="https://violetpeng.github.io/">Nanyun (Violet) Peng</a>. Before, I graduated from the <a href="https://umich.edu/">University of Michigan</a>, with a B.S. in Computer Science and Pure Math, advised by Prof. <a href="https://web.eecs.umich.edu/~chaijy/">Joyce Y. Chai</a>.</p>
-    <p>My research focuses on evaluating and improving the <span class="kw kw-reasoning">reasoning</span>, <span class="kw kw-safety">safety</span>, and <span class="kw kw-social">social behavior</span> of language models, multimodal systems, and AI agents.</p>
+    <p>My research asks when language models, multimodal systems, and AI agents actually get better: at <span class="kw kw-reasoning">training time</span>, at <span class="kw kw-agents">test time</span>, and <span class="kw kw-safety">in the world</span>.</p>
     <p>I have been recognized with the Amazon Fellowship (2026), the <a href="https://commencement.seas.ucla.edu/2025-awards/">Outstanding Graduate MS Student Award</a> from UCLA CS Department (2025), and the <a href="https://2023.emnlp.org/program/outstanding_reviewers/">Outstanding Reviewer Award</a> at EMNLP 2023 (top 0.74%).</p>
     <div class="callout">
       <p><strong>I am seeking internship and full-time industry opportunities for 2027.</strong></p>
@@ -53,19 +53,21 @@
 
 <section class="questions" aria-label="Research questions">
     <div class="q q-reasoning">
-      <span class="q-label">Reasoning</span>
-      <p class="q-text">What limits reasoning in language and multimodal models, and when does training overcome those limits?</p>
-      <p class="q-links"><a href="https://arxiv.org/pdf/2611.16064v1">OPSD Audit</a>, <a href="https://arxiv.org/pdf/2512.14691">MMGR</a>, <a href="https://arxiv.org/pdf/2502.11492">CogAlign</a></p>
+      <span class="q-label">Training time</span>
+      <p class="q-text">When does post-training (SFT, distillation, RL) truly improve a model's reasoning, rather than just its score?</p>
+      <p class="q-next">Working on: which SFT and RL data raise pass@k.</p>
+      <p class="q-links"><a href="https://arxiv.org/pdf/2611.16064v1">OPSD Audit</a>, <a href="https://arxiv.org/pdf/2512.14691">MMGR</a>, <a href="https://arxiv.org/pdf/2502.11492">CogAlign</a>, <a href="blog/mismatch-knob/">Mismatch Knob (blog)</a></p>
+    </div>
+    <div class="q q-agents">
+      <span class="q-label">Test time</span>
+      <p class="q-text">When do more agents, more compute, and memory at test time make a system better, and when do errors spread instead?</p>
+      <p class="q-next">Working on: multi-agent test-time scaling and agent memory.</p>
+      <p class="q-links"><a href="https://arxiv.org/pdf/2608.25152">Belief Cascades</a>, <a href="https://arxiv.org/pdf/2510.22768">MMPersuade</a>, <a href="https://arxiv.org/pdf/2510.00536">GUI-KV</a></p>
     </div>
     <div class="q q-safety">
-      <span class="q-label">Safety</span>
-      <p class="q-text">How can we align AI systems for safety across diverse cultural contexts while reducing social biases?</p>
+      <span class="q-label">In the world</span>
+      <p class="q-text">How do we keep these systems safe and fair for people across cultures and social groups?</p>
       <p class="q-links"><a href="https://openreview.net/pdf?id=VZQmIoDGBG">SafeWorld</a>, <a href="https://arxiv.org/pdf/2505.14972">CROSS</a>, <a href="https://arxiv.org/pdf/2410.23252">CASA</a>, <a href="https://arxiv.org/pdf/2510.17247">VideoBiasEval</a></p>
-    </div>
-    <div class="q q-social">
-      <span class="q-label">Social behavior</span>
-      <p class="q-text">How do multimodal communication and agent interactions shape beliefs and decisions, and when do they amplify misinformation or enable manipulation?</p>
-      <p class="q-links"><a href="https://arxiv.org/pdf/2510.22768">MMPersuade</a>, <a href="https://arxiv.org/pdf/2608.25152">Belief Cascades</a></p>
     </div>
 </section>
 
@@ -87,7 +89,7 @@
 <section id="research">
   <h2>Research Projects</h2>
   <p class="note">* denotes Equal Contributions and Project Lead</p>
-  <div class="filters" id="filters" role="group" aria-label="Filter projects by research theme"><button type="button" data-filter="all" aria-pressed="true">All <span class="n">15</span></button><button type="button" data-filter="reasoning" aria-pressed="false"><i class="dot dot-reasoning"></i>Reasoning <span class="n">3</span></button><button type="button" data-filter="safety" aria-pressed="false"><i class="dot dot-safety"></i>Safety <span class="n">6</span></button><button type="button" data-filter="social" aria-pressed="false"><i class="dot dot-social"></i>Social behavior <span class="n">2</span></button><button type="button" data-filter="multimodal" aria-pressed="false"><i class="dot dot-multimodal"></i>Multimodal understanding <span class="n">3</span></button></div>
+  <div class="filters" id="filters" role="group" aria-label="Filter projects by research theme"><button type="button" data-filter="all" aria-pressed="true">All <span class="n">15</span></button><button type="button" data-filter="reasoning" aria-pressed="false"><i class="dot dot-reasoning"></i>Reasoning <span class="n">3</span></button><button type="button" data-filter="safety" aria-pressed="false"><i class="dot dot-safety"></i>Safety <span class="n">6</span></button><button type="button" data-filter="agents" aria-pressed="false"><i class="dot dot-agents"></i>Multi-agent <span class="n">2</span></button><button type="button" data-filter="multimodal" aria-pressed="false"><i class="dot dot-multimodal"></i>Multimodal understanding <span class="n">3</span></button></div>
   <div class="pubs" id="pubs">
     <article class="pub" data-tag="reasoning">
       <a class="pub-fig" href="https://arxiv.org/pdf/2611.16064v1" tabindex="-1" aria-hidden="true"><img src="images/opsd_intro.png" alt="Figure 1(a): Training and evaluation thinking modes across Qwen3 model scales" loading="lazy"></a>
@@ -101,24 +103,24 @@
         </details>
       </div>
     </article>
-    <article class="pub" data-tag="social">
+    <article class="pub" data-tag="agents">
       <a class="pub-fig" href="https://arxiv.org/pdf/2608.25152" tabindex="-1" aria-hidden="true"><img src="images/mas_intro.png" alt="Belief Cascades Drive Persuasion in LLM Agent Networks" loading="lazy"></a>
       <div class="pub-body">
         <h3><a href="https://arxiv.org/pdf/2608.25152">Belief Cascades Drive Persuasion in LLM Agent Networks</a></h3>
         <p class="authors"><strong class="me">Haoyi Qiu*</strong>, Genglin Liu*, Pranav Narayanan Venkit, Kung-Hsiang Huang, Saadia Gabriel, Chien-Sheng Wu, Nanyun Peng</p>
-        <p class="meta"><span class="venue">Arxiv, 2026</span><span class="tag tag-social">Social behavior</span></p>
+        <p class="meta"><span class="venue">Arxiv, 2026</span><span class="tag tag-agents">Multi-agent</span></p>
         <details class="abstract">
           <summary>Abstract</summary>
           <p>We introduce a controlled testbed for studying goal-directed agent-to-agent persuasion in networks of LLM agents grounded in real-world ego-network topologies, finding that persuasion dynamics depend on the interaction of topology, competition, topic, and model prior. We show that direct exposure reliably predicts next-round stance change while peer relays carry smaller but measurable influence, arguing for evaluating multi-agent persuasion as a trajectory- and exposure-level process using belief probes, exposure provenance, and action logs.</p>
         </details>
       </div>
     </article>
-    <article class="pub" data-tag="social">
+    <article class="pub" data-tag="agents">
       <a class="pub-fig" href="https://arxiv.org/pdf/2510.22768" tabindex="-1" aria-hidden="true"><img src="images/mmpersuade_intro.png" alt="MMPersuade: Vision-Language Model Susceptibility in Multimodal Persuasion" loading="lazy"></a>
       <div class="pub-body">
         <h3><a href="https://arxiv.org/pdf/2510.22768">Seeing is Believing? Evaluating Vision-Language Model Susceptibility in Agent-to-Agent Multimodal Persuasion</a></h3>
         <p class="authors"><strong class="me">Haoyi Qiu</strong>, Yilun Zhou, Pranav Narayanan Venkit, Kung-Hsiang Huang, Jiaxin Zhang, Nanyun Peng, Chien-Sheng Wu</p>
-        <p class="meta"><span class="venue">EMNLP, 2026</span><span class="tag tag-social">Social behavior</span></p>
+        <p class="meta"><span class="venue">EMNLP, 2026</span><span class="tag tag-agents">Multi-agent</span></p>
         <details class="abstract">
           <summary>Abstract</summary>
           <p>We introduce MMPersuade, a unified framework for studying multimodal persuasion in LVLMs, showing that multimodal inputs substantially increase model susceptibility to persuasion—especially in misinformation scenarios—and that different persuasion strategies vary in effectiveness across contexts.</p>
