@@ -1,821 +1,380 @@
-<!DOCTYPE HTML>
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-  <title>Haoyi Qiu</title>
-  
-  <meta name="author" content="Jon Barron">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <link rel="stylesheet" type="text/css" href="stylesheet.css">
-
-  <link rel="icon" href="images/koala-emoji.png">
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haoyi Qiu</title>
+<meta name="author" content="Haoyi Qiu">
+<meta name="description" content="Haoyi Qiu, PhD candidate in Computer Science at UCLA. Research on the reasoning, safety, and social behavior of language models, multimodal systems, and AI agents.">
+<meta property="og:title" content="Haoyi Qiu">
+<meta property="og:description" content="PhD candidate in Computer Science at UCLA. Research on the reasoning, safety, and social behavior of language models, multimodal systems, and AI agents.">
+<meta property="og:type" content="website">
+<link rel="icon" href="images/koala-emoji.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="stylesheet.css?v=20261123a">
+<script>try { var t = localStorage.getItem('mk-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
-
 <body>
-  <table style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-    <tr style="padding:0px">
-      <td style="padding:0px">
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-          <tr style="padding:0px">
-            <td style="padding:2.5%;width:63%;vertical-align:middle">
-              <p style="text-align:center">
-                <name>Haoyi Qiu</name>
-              </p>
-              <p>I am a third-year PhD candidate in Computer Science at <a href="https://www.ucla.edu/">UCLA</a> advised by Prof. <a href="https://violetpeng.github.io/">Nanyun (Violet) Peng</a>. Before, I graduated from the <a href="https://umich.edu/">University of Michigan</a>, with a B.S. in Computer Science and Pure Math, advised by Prof. <a href="https://web.eecs.umich.edu/~chaijy/">Joyce Y. Chai</a>.
-              </p>
-              <p>
-                My research focuses on evaluating and improving the <b><font color="blue">reasoning</font></b>, <b><font color="purple">safety</font></b>, and <b><font color="orange">social behavior</font></b> of language models, multimodal systems, and AI agents.
-              </p>
-              <ul>
-                <li>What limits reasoning in language and multimodal models, and when does training overcome those limits? (<a href="https://arxiv.org/pdf/2611.16064v1">OPSD Audit</a>, <a href="https://arxiv.org/pdf/2512.14691">MMGR</a>, <a href="https://arxiv.org/pdf/2502.11492">CogAlign</a>)</li>
-                <li>How can we align AI systems for safety across diverse cultural contexts while reducing social biases? (<a href="https://openreview.net/pdf?id=VZQmIoDGBG">SafeWorld</a>, <a href="https://arxiv.org/pdf/2505.14972">CROSS</a>, <a href="https://arxiv.org/pdf/2410.23252">CASA</a>, <a href="https://arxiv.org/pdf/2510.17247">VideoBiasEval</a>)</li>
-                <li>How do multimodal communication and agent interactions shape beliefs and decisions, and when do they amplify misinformation or enable manipulation? (<a href="https://arxiv.org/pdf/2510.22768">MMPersuade</a>, <a href="https://arxiv.org/pdf/2608.25152">Belief Cascades</a>)</li>
-              </ul>
-              <p>
-                I have been recognized with the Amazon Fellowship (2026), the <a href="https://commencement.seas.ucla.edu/2025-awards/">Outstanding Graduate MS Student Award</a> from UCLA CS Department (2025), and the <a href="https://2023.emnlp.org/program/outstanding_reviewers/">Outstanding Reviewer Award</a> at EMNLP 2023 (top 0.74%).
-              </p>
-              <p>
-                <strong style="color:#b42318;">I am seeking internship and full-time industry opportunities for 2027.</strong>
-              </p>
-              <p>
-                If you know of opportunities that could be a good fit, please feel free to <a href="mailto:haoyiqiu@g.ucla.edu">reach out</a>. I'm also happy to discuss research, explore collaborations, or catch up.
-              </p>
-              <p class="contact-links" style="text-align:center">
-                <a href="mailto:haoyiqiu@g.ucla.edu" title="haoyiqiu@g.ucla.edu">Email 💌</a> &nbsp;/&nbsp;
-                <!-- <a href="data/Haoyi_CV_short.pdf">CV</a> &nbsp/&nbsp -->
-                <a href="https://scholar.google.com/citations?user=vQd32CIAAAAJ&hl=en">Google Scholar 👩🏻‍🎓</a> &nbsp;/&nbsp;
-                <a href="https://twitter.com/HaoyiQiu">Twitter 📝</a> &nbsp;/&nbsp;
-                <a href="https://www.instagram.com/7u7u_life_recorder/">Life 🌷</a>
-              </p>
-            </td>
-            <td style="padding:2.5%;width:30%;max-width:30%">
-              <img style="width:100%;max-width:100%" alt="profile photo" src="images/Haoyi.jpg" class="hoverZoomLink">
-            </td>
-          </tr>
-        </tbody></table>
+<header class="topbar">
+  <a class="brand" href="#top">Haoyi Qiu</a>
+  <nav aria-label="Sections">
+    <a href="#blog">Blog</a>
+    <a href="#research">Research</a>
+    <a href="#experience">Experience</a>
+    <a href="#awards">Awards</a>
+  </nav>
+  <button class="theme" id="theme" type="button" aria-label="Switch light or dark theme">Dark</button>
+</header>
 
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-            <tr>
-            <td style="padding:10px;width:100%;vertical-align:middle">
-              <heading>Research Projects</heading>
-              <p>
-                <b>* denotes Equal Contributions and Project Lead</b>
-              </p>
-            </td>
-          </tr>
-        </tbody></table>
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-          <tr>
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/opsd_intro.png' class="project-fig" alt="Figure 1(a): Training and evaluation thinking modes across Qwen3 model scales">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2611.16064v1">
-                <papertitle>Privileged Information Does Not Guarantee Privileged Guidance: Auditing On-Policy Self-Distillation for Reasoning Models</papertitle>
-              </a>
-              <br>
-              <u><strong>Haoyi Qiu</strong></u>, Akshat Agarwal
-              <br>
-              <span style="color: red; font-style: italic;">arXiv, 2026</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We audit on-policy self-distillation across four stages of reasoning transfer: Source, Encoding, Transmission, and Expression. Across three Qwen3 scales, privileged solutions improve teacher solving and recovery but do not reliably yield useful supervision or independent student reasoning. Controlled comparisons show that the largest gains track the teacher's thinking mode, with problem-only teachers often matching or outperforming teachers given solutions. We call this pattern reasoning arbitrage, highlighting why accuracy gains alone cannot establish reasoning transfer from privileged information.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/mas_intro.png' class="project-fig" alt="Belief Cascades Drive Persuasion in LLM Agent Networks">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2608.25152">
-                <papertitle>Belief Cascades Drive Persuasion in LLM Agent Networks</papertitle>
-              </a>
-              <br>
-              <u><strong>Haoyi Qiu*</strong></u>, Genglin Liu*, Pranav Narayanan Venkit, Kung-Hsiang Huang, Saadia Gabriel, Chien-Sheng Wu, Nanyun Peng
-              <br>
-              <span style="color: red; font-style: italic;">Arxiv, 2026</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We introduce a controlled testbed for studying goal-directed agent-to-agent persuasion in networks of LLM agents grounded in real-world ego-network topologies, finding that persuasion dynamics depend on the interaction of topology, competition, topic, and model prior. We show that direct exposure reliably predicts next-round stance change while peer relays carry smaller but measurable influence, arguing for evaluating multi-agent persuasion as a trajectory- and exposure-level process using belief probes, exposure provenance, and action logs.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/mmpersuade_intro.png' class="project-fig" alt="MMPersuade: Vision-Language Model Susceptibility in Multimodal Persuasion">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2510.22768">
-                <papertitle>Seeing is Believing? Evaluating Vision-Language Model Susceptibility in Agent-to-Agent Multimodal Persuasion</papertitle>
-              </a>
-              <br>
-              <u><strong>Haoyi Qiu</strong></u>, Yilun Zhou, Pranav Narayanan Venkit, Kung-Hsiang Huang, Jiaxin Zhang, Nanyun Peng, Chien-Sheng Wu
-              <br>
-              <span style="color: red; font-style: italic;">EMNLP, 2026</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We introduce MMPersuade, a unified framework for studying multimodal persuasion in LVLMs, showing that multimodal inputs substantially increase model susceptibility to persuasion—especially in misinformation scenarios—and that different persuasion strategies vary in effectiveness across contexts.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/mmgr_intro.png' class="project-fig" alt="MMGR: Multi-Modal Generative Reasoning Benchmark">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2512.14691">
-                <papertitle>MMGR: Multi-Modal Generative Reasoning Benchmark and Evaluation</papertitle>
-              </a>
-              <br>
-              <u><strong>Haoyi Qiu</strong></u>*, Zefan Cai*, Tianyi Ma*, Haozhe Zhao*, Gengze Zhou, Kung-Hsiang Huang, Parisa Kordjamshidi, Minjia Zhang, Wen Xiao, Jiuxiang Gu, Nanyun Peng, Junjie Hu
-              <br>
-              <span style="color: red; font-style: italic;">EMNLP, 2026</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We propose MMGR, a principled evaluation framework for generative reasoning across abstract reasoning, embodied navigation, and physical commonsense, revealing that leading video and image models struggle with causal correctness and long-horizon spatial planning.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/videobias_intro.png' class="project-fig" alt="VideoBiasEval: Alignment Tuning and Social Bias in Video Diffusion Models">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2510.17247">
-                <papertitle>From Preferences to Prejudice: The Role of Alignment Tuning in Shaping Social Bias in Video Diffusion Models</papertitle>
-              </a>
-              <br>
-              <u><strong>Haoyi Qiu</strong></u>*, Zefan Cai*, Haozhe Zhao*, Ke Wan, Jiachen Li, Jiuxiang Gu, Wen Xiao, Nanyun Peng, Junjie Hu
-              <br>
-              <span style="color: red; font-style: italic;">TMLR, 2026</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We introduce VideoBiasEval, a diagnostic framework that traces how social biases evolve through the alignment pipeline of video diffusion models. By training our own reward models and alignment-tuned diffusion models, we provide a full training recipe and reveal that alignment tuning not only strengthens representational biases but also makes them temporally stable across generated videos.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/guikv_intro.png' class="project-fig" alt="GUI-KV: Efficient GUI Agents via KV Cache Compression">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2510.00536">
-                <papertitle>GUI-KV: Efficient GUI Agents via KV Cache with Spatio-Temporal Awareness</papertitle>
-              </a>
-              <br>
-              Kung-Hsiang Huang, <u><strong>Haoyi Qiu</strong></u>, Yutong Dai, Caiming Xiong, Chien-Sheng Wu
-              <br>
-              <span style="color: red; font-style: italic;">TMLR, 2026</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We propose GUI-KV, a plug-and-play KV cache compression method for GUI agents that exploits spatial saliency and temporal redundancy, reducing decoding FLOPs by 38.9% while increasing step accuracy by 4.1% over full-cache baselines without retraining.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/cross_intro.png' class="project-fig" alt="CROSS: Multimodal Cultural Safety Evaluation and Alignment">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2505.14972">
-                <papertitle>Multimodal Cultural Safety: Evaluation Framework and Alignment Strategies</papertitle>
-              </a>
-              <br>
-              <u><strong>Haoyi Qiu</strong></u>, Kung-Hsiang Huang, Ruichen Zheng, Jiao Sun, Nanyun Peng
-              <br>
-              <span style="color: red; font-style: italic;">TMLR, 2025</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We introduce CROSS, a benchmark of 1,284 multilingual visually grounded queries from 16 countries to assess cultural safety in LVLMs. We develop supervised fine-tuning with culturally grounded data and preference tuning with contrastive response pairs, substantially improving GPT-4o's cultural awareness (+60%) and compliance (+55%) while preserving general capabilities.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/cogalign_intro.png' class="project-fig" alt="CogAlign: Enhancing Visual Arithmetic in Vision Language Models">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2502.11492">
-                <papertitle>Why Vision Language Models Struggle with Visual Arithmetic? Towards Enhanced Chart and Geometry Understanding</papertitle>
-              </a>
-              <br>
-              Kung-Hsiang Huang, Can Qin, <u><strong>Haoyi Qiu</strong></u>, Philippe Laban, Shafiq Joty, Caiming Xiong, Chien-Sheng Wu
-              <br>
-              <span style="color: red; font-style: italic;">ACL Findings, 2025</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We propose CogAlign, a post-training strategy inspired by Piaget's cognitive development theory that trains VLMs to recognize invariant properties under visual transformations. CogAlign outperforms supervised fine-tuning while requiring 60% less training data, significantly improving visual arithmetic and downstream chart and geometry understanding.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/casal_intro.png' class="project-fig" alt="CASA: Cultural and Social Awareness of LLM Web Agents">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2410.23252">
-                <papertitle>Evaluating Cultural and Social Awareness of LLM Web Agents</papertitle>
-              </a>
-              <br>
-              <u><strong>Haoyi Qiu</strong></u>, Alexander R. Fabbri, Divyansh Agarwal, Kung-Hsiang Huang, Sarah Tan, Nanyun Peng, Chien-Sheng Wu
-              <br>
-              <span style="color: red; font-style: italic;">NAACL Findings, 2025</span><span style="color: orange; font-style: bold"> Best Paper Nomination</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We introduce CASA, a benchmark for evaluating LLM web agents' cultural and social awareness across shopping and forum tasks, finding that agents achieve less than 10% awareness coverage with over 40% norm violation rates. We show that fine-tuning on culture-specific datasets enhances cross-region generalization, while prompting boosts complex task navigation.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/chart_survey_intro.png' class="project-fig" alt="Survey on Automatic Chart Understanding in the Era of Large Foundation Models">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/abs/2403.12027">
-                <papertitle>From Pixels to Insights: A Survey on Automatic Chart Understanding in the Era of Large Foundation Models</papertitle>
-              </a>
-              <br>
-              Kung-Hsiang Huang, Hou Pong Chan, Yi R. Fung, <u><strong>Haoyi Qiu</strong></u>, Mingyang Zhou, Shafiq Joty, Shih-Fu Chang, Heng Ji
-              <br>
-              <span style="color: red; font-style: italic;">TKDE, 2024</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We provide a comprehensive survey of automatic chart understanding in the era of large foundation models, covering tasks, evaluation metrics, modeling strategies, and future directions including domain-specific charts and agent-oriented settings.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/safeworld_intro.png' class="project-fig" alt="SafeWorld: Geo-Diverse Safety Alignment">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://openreview.net/pdf?id=VZQmIoDGBG">
-                <papertitle>SafeWorld: Geo-Diverse Safety Alignment</papertitle>
-              </a>
-              <br>
-              Da Yin*, <u><strong>Haoyi Qiu</strong></u>*, Kung-Hsiang Huang, Kai-Wei Chang, Nanyun Peng
-              <br>
-              <span style="color: red; font-style: italic;">NeurIPS, 2024</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We introduce SafeWorld, a benchmark of 2,342 queries grounded in human-verified cultural norms and legal policies from 50 countries, along with a multi-dimensional safety evaluation framework. Using synthesized preference pairs for DPO, our trained SafeWorldLM outperforms GPT-4o across all evaluation dimensions by a large margin.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/measure_bias.png' class="project-fig" alt="BiasPainter: Measuring Social Bias in Image Generation Models">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2401.00763.pdf">
-                <papertitle>New Job, New Gender? Measuring the Social Bias in Image Generation Models</papertitle>
-              </a>
-              <br>
-              Wenxuan Wang, Haonan Bai, Jen-tse Huang, Yuxuan Wan, Youliang Yuan, <u><strong>Haoyi Qiu</strong></u>, Nanyun Peng, Michael R Lyu
-              <br>
-              <span style="color: red; font-style: italic;">ACM MM, 2024 (Oral)</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We propose BiasPainter, an evaluation framework that automatically triggers and detects social biases in image generation models across 62 professions, 39 activities, 57 objects, and 70 personality traits, achieving 90.8% accuracy on automatic bias detection.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/valor_eval_intro.png' class="project-fig" alt="VALOR-Eval: Coverage and Faithfulness Evaluation of Large Vision-Language Models">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/pdf/2404.13874">
-                <papertitle>VALOR-Eval: Holistic Coverage and Faithfulness Evaluation of Large Vision-Language Models</papertitle>
-              </a>
-              <br>
-              <u><strong>Haoyi Qiu</strong></u>*, Wenbo Hu*, Zi-Yi Dou, Nanyun Peng
-              <br>
-              <span style="color: red; font-style: italic;">ACL Findings, 2024</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We introduce a multi-dimensional benchmark and LLM-based evaluation framework for LVLM hallucination that covers objects, attributes, and relations, generalizing the CHAIR metric to jointly assess both faithfulness and coverage of model outputs.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/amrfact.png' class="project-fig" alt="AMRFact: AMR-Driven Summarization Factuality Evaluation">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/abs/2311.09521">
-                <papertitle>AMRFact: Enhancing Summarization Factuality Evaluation with AMR-Driven Negative Samples Generation</papertitle>
-              </a>
-              <br>
-              <u><strong>Haoyi Qiu</strong></u>, Kung-Hsiang Huang*, Jingnong Qu*, Nanyun Peng
-              <br>
-              <span style="color: red; font-style: italic;">NAACL, 2024 (Oral)</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We propose AMRFact, a framework that leverages Abstract Meaning Representations to generate coherent factually inconsistent summaries with high error-type coverage for training factual consistency evaluators, significantly outperforming previous systems on the AggreFact-SOTA benchmark.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:33%;vertical-align:top">
-              <img src='images/clipscore-bias.png' class="project-fig" alt="Gender Biases in Automatic Evaluation Metrics for Image Captioning">
-            </td>
-            <td style="padding:10px;width:67%;vertical-align:top">
-              <a href="https://arxiv.org/abs/2305.14711">
-                <papertitle>Gender Biases in Automatic Evaluation Metrics for Image Captioning</papertitle>
-              </a>
-              <br>
-              <u><strong>Haoyi Qiu</strong></u>, Zi-Yi Dou, Tianlu Wang, Asli Celikyilmaz, Nanyun Peng
-              <br>
-              <span style="color: red; font-style: italic;">EMNLP, 2023</span>
-              <br>
-              <details class="abstract">
-                <summary>Abstract</summary>
-                <p style="margin-top:5px;margin-bottom:0px;">
-                  <em>We conduct a systematic study of gender biases in model-based evaluation metrics (e.g., CLIPScore) for image captioning, revealing that using biased metrics as rewards in RL training propagates and amplifies stereotypes in generation models. We propose an effective debiasing method without hurting correlation with human judgments.</em>
-                </p>
-              </details>
-            </td>
-          </tr>
-          
-          <!-- <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:35%;vertical-align:middle">
-              <div class="one">
-                <img src='images/diffusiondisentangle.png' width="240">
-              </div>
-            </td>
-            <td style="padding:20px;width:65%;vertical-align:middle">
-              <a href="https://arxiv.org/pdf/2212.08698.pdf">
-                <papertitle>Uncovering the Disentanglement Capability in Text-to-Image Diffusion Models</papertitle>
-              </a>
-              <br>
-              <strong>Qiucheng Wu</strong>, Yujian Liu, Handong Zhao, Ajinkya Kale, Trung Bui, Tong Yu, Zhe Lin, Yang Zhang, Shiyu Chang
-              <br>
-              <em>CVPR</em>, 2023 <a href="https://github.com/UCSB-NLP-Chang/DiffusionDisentanglement">[Code]</a> <a href="https://wuqiuche.github.io/DiffusionDisentanglement-project-page/">[Demo]</a>
-              <br>
-              <p></p>
-              <p>
-                Based on a fixed stable diffusion model, we disentangle target attributes from a single training image. The learned parameters can then be applied to unseen images and achieve same edits. This finding leads to a lightweight image editing framework with only 50 learnable parameters.
-              </p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:35%;vertical-align:middle">
-              <div class="one">
-                <img src='images/adadeblur.png' width="240">
-              </div>
-            </td>
-            <td style="padding:20px;width:65%;vertical-align:middle">
-              <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10254493">
-                <papertitle>Broad Spectrum Image Deblurring via An Adaptive Super-Network</papertitle>
-              </a>
-              <br>
-              <strong>Qiucheng Wu*</strong>, Yifan Jiang*, Junru Wu*, Victor Kulikov, Vidit Goel, Nikita Orlov, Humphrey Shi, Zhangyang Wang, Shiyu Chang 
-              <br>
-              <em>IEEE Transactions on Image Processing (TIP)</em>, 2023<a href="https://github.com/wuqiuche/Ada-Deblur"> [Code]</a>
-              <br>
-              <p></p>
-              <p>
-                We propose Ada-Deblur, a super-network that can be applied to a "broad spectrum" of various blur levels with no re-training on novel blurs.
-              </p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:35%;vertical-align:middle">
-              <div class="one">
-                <img src='images/grasping.png' width="240">
-              </div>
-            </td>
-            <td style="padding:20px;width:65%;vertical-align:middle">
-              <a href="https://arxiv.org/pdf/2204.12696.pdf">
-                <papertitle>Grasping the Arrow of Time from the Singularity: Decoding Micromotion in Low-dimensional Latent Spaces from StyleGAN</papertitle>
-              </a>
-              <br>
-              <strong>Qiucheng Wu*</strong>, Yifan Jiang*, Junru Wu*, Kai Wang, Gong Zhang, Humphrey Shi, Zhangyang Wang, Shiyu Chang
-              <br>
-              <em>Arxiv</em>, 2022 <a href="https://github.com/wuqiuche/micromotion-styleGAN">[Code]</a> <a href="https://wuqiuche.github.io/micromotion-project-page/">[Demo]</a>
-              <br>
-              <p></p>
-              <p>
-                
-              </p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:35%;vertical-align:middle">
-              <div class="one">
-                <img src='images/TemporalFiltering.png' width="240">
-              </div>
-            </td>
-            <td style="padding:20px;width:65%;vertical-align:middle">
-              <a href="https://arxiv.org/pdf/2212.08698.pdf">
-                <papertitle>Temporal Frame Filtering with Near-Pixel Compute for Autonomous Driving</papertitle>
-              </a>
-              <br>
-              Wantong Li, <strong>Qiucheng Wu</strong>, Janak Sharda, Shiyu Chang, Shimeng Yu
-              <br>
-              <em>IEEE 4th International Conference on Artificial Intelligence Circuits and Systems (AICAS)</em>, 2022
-              <br>
-              <p></p>
-              <p>
+<main id="top">
 
-              </p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:35%;vertical-align:middle">
-              <div class="one">
-                <img src='images/tridesign.png' width="240">
-              </div>
-            </td>
-            <td style="padding:20px;width:65%;vertical-align:middle">
-              <a href="https://dl.acm.org/doi/pdf/10.1145/3566097.3567864">
-                <papertitle>Data-Model-Circuit Tri-Design for Ultra-Light Video Intelligence on Edge Devices</papertitle>
-              </a>
-              <br>
-              Yimeng Zhang*, Akshay Karkal Kamath*, <strong>Qiucheng Wu</strong>*, Zhiwen Fan*, Wuyang Chen, Zhangyang Wang, Shiyu Chang, Sijia Liu, Cong Hao
-              <br>
-              <em>Proceedings of the 28th Asia and South Pacific Design Automation Conference</em>, 2023
-              <br>
-              <p></p>
-              <p>
+<!-- ===== About ===== -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Haoyi Qiu</h1>
+    <p>I am a third-year PhD candidate in Computer Science at <a href="https://www.ucla.edu/">UCLA</a> advised by Prof. <a href="https://violetpeng.github.io/">Nanyun (Violet) Peng</a>. Before, I graduated from the <a href="https://umich.edu/">University of Michigan</a>, with a B.S. in Computer Science and Pure Math, advised by Prof. <a href="https://web.eecs.umich.edu/~chaijy/">Joyce Y. Chai</a>.</p>
+    <p>My research focuses on evaluating and improving the <span class="kw kw-reasoning">reasoning</span>, <span class="kw kw-safety">safety</span>, and <span class="kw kw-social">social behavior</span> of language models, multimodal systems, and AI agents.</p>
+    <p>I have been recognized with the Amazon Fellowship (2026), the <a href="https://commencement.seas.ucla.edu/2025-awards/">Outstanding Graduate MS Student Award</a> from UCLA CS Department (2025), and the <a href="https://2023.emnlp.org/program/outstanding_reviewers/">Outstanding Reviewer Award</a> at EMNLP 2023 (top 0.74%).</p>
+    <div class="callout">
+      <p><strong>I am seeking internship and full-time industry opportunities for 2027.</strong></p>
+      <p>If you know of opportunities that could be a good fit, please feel free to <a href="mailto:haoyiqiu@g.ucla.edu">reach out</a>. I'm also happy to discuss research, explore collaborations, or catch up.</p>
+    </div>
+    <p class="contact">
+      <a href="mailto:haoyiqiu@g.ucla.edu">Email 💌</a>
+      <a href="https://scholar.google.com/citations?user=vQd32CIAAAAJ&hl=en">Google Scholar 👩🏻‍🎓</a>
+      <a href="https://twitter.com/HaoyiQiu">Twitter 📝</a>
+      <a href="https://www.instagram.com/7u7u_life_recorder/">Life 🌷</a>
+    </p>
+  </div>
+  <img class="portrait" src="images/Haoyi_600.jpg" alt="Portrait of Haoyi Qiu" width="600" height="600">
+</section>
 
-              </p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:25%;vertical-align:middle">
-              <div class="one">
-                <img src='images/ActionTranslator.png' width="240">
-              </div>
-            </td>
-            <td style="padding:20px;width:75%;vertical-align:middle">
-              <a href="https://ojs.aaai.org/index.php/AAAI/article/view/20635">
-                <papertitle>Learning Action Translator for Meta Reinforcement Learning on Sparse Rewards Tasks</papertitle>
-              </a>
-              <br>
-              Yijie Guo, <strong>Qiucheng Wu</strong>, Honglak Lee
-              <br>
-              <em>AAAI</em>, 2022
-              <br>
-              <p></p>
-              <p>
-                Meta reinforcement learning requires substantial amounts of data. To improve the sample efficiency and performance of metal-RL algorithms on sparse-reward tasks, we introduce a novel objective function to learn an action translator among training tasks.
-              </p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:25%;vertical-align:middle">
-              <div class="one">
-                <img src='images/SifterText.png' width="240">
-              </div>
-            </td>
-            <td style="padding:20px;width:75%;vertical-align:middle"> 
-              <a href="https://link.springer.com/article/10.1007/s10916-022-01880-6">
-                <papertitle>DataSifterText: Partially Synthetic Text Generation for Sensitive Clinical Notes</papertitle>
-              </a>
-              <br>
-              Nina Zhou, <strong>Qiucheng Wu</strong>, Zewen Wu, Simeone Marino, and Ivo Dinov
-              <br>
-              <em>Journal of Medical Systems</em>, 2022 
-              <br>
-              <p></p>
-              <p>
-                We propose DataSifter-Text to protect privacy of sensitive textual dataset. The DataSifter-Text obfuscates identifiable information in the dataset. It effectively balances between privacy and utility.
-              </p>
-            </td>
-          </tr> 
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:25%;vertical-align:middle">
-              <div class="one">
-                <img src='images/CBDA.png' width="240">
-              </div>
-            </td>
-            <td style="padding:20px;width:75%;vertical-align:middle">
-              <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0228520">
-                <papertitle>Compressive Big Data Analytics: An ensemble meta-algorithm for high-dimensional multisource datasets</papertitle>
-              </a>
-              <br>
-              Simeone Marino, Yi Zhao, Nina Zhou, Yiwang Zhou, Arthur W. Toga, Lu Zhao, Yingsi Jian, Yichen Yang, Yehu Chen, <strong>Qiucheng Wu</strong>, Jessica Wild, Brandon Cummings, Ivo D. Dinov
-              <br>
-              <em>PLOS One</em>, 2020 
-              <br>
-              <p></p>
-              <p>
-                We apply the compressive big data analytics (CBDA) to analyze sailent features and key biomarkers of a high-dimensional dataset.
-              </p>
-              <p></p>
-              <p>
-                Most Likely Health Impact in 4th Annual Symposium Poster Competition in Michigan Institute for Data Science, University of Michigan.
-              </p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:25%;vertical-align:middle">
-              <div class="one">
-                <img src='images/Sifter.png' width="260">
-              </div>
-            </td>
-            <td style="padding:20px;width:75%;vertical-align:middle">
-              <a href="https://www.tandfonline.com/doi/full/10.1080/00949655.2018.1545228">
-                <papertitle>DataSifter: Statistical Obfuscation of Electronic Health Records and Other Sensitive Datasets</papertitle>
-              </a>
-              <br>
-              Simeone Marino, Nina Zhou, Yi Zhao, Lu Wang, <strong>Qiucheng Wu</strong>, Ivo D. Dinov
-              <br>
-              <em>Journal of Statistical Computation and Simulation</em>, 2019
-              <br>
-              <p></p>
-              <p>
-                We propose the DataSifter to obfuscate sensitivie dataset while preserve the utility for other researches.
-              </p>
-              <p></p>
-              <p>
-                Most Interesting Methodological Advances in 4th Annual Symposium Poster Competition in Michigan Institute for Data Science, University of Michigan.
-              </p>
-            </td>
-          </tr> -->
-        </tbody></table>
+<section class="questions" aria-label="Research questions">
+    <div class="q q-reasoning">
+      <span class="q-label">Reasoning</span>
+      <p class="q-text">What limits reasoning in language and multimodal models, and when does training overcome those limits?</p>
+      <p class="q-links"><a href="https://arxiv.org/pdf/2611.16064v1">OPSD Audit</a>, <a href="https://arxiv.org/pdf/2512.14691">MMGR</a>, <a href="https://arxiv.org/pdf/2502.11492">CogAlign</a></p>
+    </div>
+    <div class="q q-safety">
+      <span class="q-label">Safety</span>
+      <p class="q-text">How can we align AI systems for safety across diverse cultural contexts while reducing social biases?</p>
+      <p class="q-links"><a href="https://openreview.net/pdf?id=VZQmIoDGBG">SafeWorld</a>, <a href="https://arxiv.org/pdf/2505.14972">CROSS</a>, <a href="https://arxiv.org/pdf/2410.23252">CASA</a>, <a href="https://arxiv.org/pdf/2510.17247">VideoBiasEval</a></p>
+    </div>
+    <div class="q q-social">
+      <span class="q-label">Social behavior</span>
+      <p class="q-text">How do multimodal communication and agent interactions shape beliefs and decisions, and when do they amplify misinformation or enable manipulation?</p>
+      <p class="q-links"><a href="https://arxiv.org/pdf/2510.22768">MMPersuade</a>, <a href="https://arxiv.org/pdf/2608.25152">Belief Cascades</a></p>
+    </div>
+</section>
 
-      <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-          <tr>
-          <td style="padding:10px;width:100%;vertical-align:middle">
-            <heading>Award</heading>
-          </td>
-        </tr>
-      </tbody></table>
-      <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-        <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-          <td style="padding:10px;width:100%;vertical-align:middle">
-            <p>Amazon Fellowship (2026)</p>
-            <p><a href="https://commencement.seas.ucla.edu/2025-awards/" target="_blank"> Outstanding Graduate MS Student</a> (1 per department) - UCLA CS Department, 05/2025</p>
-            <p><a href="https://2023.emnlp.org/program/outstanding_reviewers/" target="_blank"> Outstanding Reviewer Award</a> (0.74%) - EMNLP 2023</p>
-            <p>James B. Angell Scholar, University Honors, EECS Scholar, The University of Michigan</p>
-          </td>
-        </tr>
-      </tbody></table>
+<!-- ===== Blog ===== -->
+<section id="blog">
+  <h2>Blog</h2>
+  <a class="post" href="blog/mismatch-knob/">
+    <img src="blog/mismatch-knob/card.png" alt="Two diagrams of two tokens with four layers each: a standard transformer, and a Latent Recurrent Transformer whose last layer of token t feeds every layer of token t+1." loading="lazy" width="2400" height="1260">
+    <div class="post-body">
+      <span class="post-date">November 23, 2026 · 16 min read</span>
+      <h3>Turning the Mismatch Knob: Sync and Async RL on a Latent Recurrent Transformer</h3>
+      <p>What happens when you post-train a Latent Recurrent Transformer with existing RL methods, synchronously and asynchronously.</p>
+      <span class="post-more">Read the post →</span>
+    </div>
+  </a>
+</section>
 
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-          <tr>
-          <td style="padding:10px;width:100%;vertical-align:middle">
-            <heading>Service</heading>
-          </td>
-        </tr>
-      </tbody></table>
-      <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-        <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-          <td style="padding:10px;width:100%;vertical-align:middle">
-            <p>Area Chair: ACL Rolling Review 2025</p>
-            <p>Reviewer: ICLR 2025, ACL Rolling Review 2024, EMNLP 2023</p>
-          </td>
-        </tr>
-      </tbody></table>
+<!-- ===== Research ===== -->
+<section id="research">
+  <h2>Research Projects</h2>
+  <p class="note">* denotes Equal Contributions and Project Lead</p>
+  <div class="filters" id="filters" role="group" aria-label="Filter projects by research theme"><button type="button" data-filter="all" aria-pressed="true">All <span class="n">15</span></button><button type="button" data-filter="reasoning" aria-pressed="false"><i class="dot dot-reasoning"></i>Reasoning <span class="n">3</span></button><button type="button" data-filter="safety" aria-pressed="false"><i class="dot dot-safety"></i>Safety <span class="n">6</span></button><button type="button" data-filter="social" aria-pressed="false"><i class="dot dot-social"></i>Social behavior <span class="n">2</span></button><button type="button" data-filter="multimodal" aria-pressed="false"><i class="dot dot-multimodal"></i>Multimodal understanding <span class="n">3</span></button></div>
+  <div class="pubs" id="pubs">
+    <article class="pub" data-tag="reasoning">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2611.16064v1" tabindex="-1" aria-hidden="true"><img src="images/opsd_intro.png" alt="Figure 1(a): Training and evaluation thinking modes across Qwen3 model scales" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2611.16064v1">Privileged Information Does Not Guarantee Privileged Guidance: Auditing On-Policy Self-Distillation for Reasoning Models</a></h3>
+        <p class="authors"><strong class="me">Haoyi Qiu</strong>, Akshat Agarwal</p>
+        <p class="meta"><span class="venue">arXiv, 2026</span><span class="tag tag-reasoning">Reasoning</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We audit on-policy self-distillation across four stages of reasoning transfer: Source, Encoding, Transmission, and Expression. Across three Qwen3 scales, privileged solutions improve teacher solving and recovery but do not reliably yield useful supervision or independent student reasoning. Controlled comparisons show that the largest gains track the teacher's thinking mode, with problem-only teachers often matching or outperforming teachers given solutions. We call this pattern reasoning arbitrage, highlighting why accuracy gains alone cannot establish reasoning transfer from privileged information.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="social">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2608.25152" tabindex="-1" aria-hidden="true"><img src="images/mas_intro.png" alt="Belief Cascades Drive Persuasion in LLM Agent Networks" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2608.25152">Belief Cascades Drive Persuasion in LLM Agent Networks</a></h3>
+        <p class="authors"><strong class="me">Haoyi Qiu*</strong>, Genglin Liu*, Pranav Narayanan Venkit, Kung-Hsiang Huang, Saadia Gabriel, Chien-Sheng Wu, Nanyun Peng</p>
+        <p class="meta"><span class="venue">Arxiv, 2026</span><span class="tag tag-social">Social behavior</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We introduce a controlled testbed for studying goal-directed agent-to-agent persuasion in networks of LLM agents grounded in real-world ego-network topologies, finding that persuasion dynamics depend on the interaction of topology, competition, topic, and model prior. We show that direct exposure reliably predicts next-round stance change while peer relays carry smaller but measurable influence, arguing for evaluating multi-agent persuasion as a trajectory- and exposure-level process using belief probes, exposure provenance, and action logs.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="social">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2510.22768" tabindex="-1" aria-hidden="true"><img src="images/mmpersuade_intro.png" alt="MMPersuade: Vision-Language Model Susceptibility in Multimodal Persuasion" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2510.22768">Seeing is Believing? Evaluating Vision-Language Model Susceptibility in Agent-to-Agent Multimodal Persuasion</a></h3>
+        <p class="authors"><strong class="me">Haoyi Qiu</strong>, Yilun Zhou, Pranav Narayanan Venkit, Kung-Hsiang Huang, Jiaxin Zhang, Nanyun Peng, Chien-Sheng Wu</p>
+        <p class="meta"><span class="venue">EMNLP, 2026</span><span class="tag tag-social">Social behavior</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We introduce MMPersuade, a unified framework for studying multimodal persuasion in LVLMs, showing that multimodal inputs substantially increase model susceptibility to persuasion—especially in misinformation scenarios—and that different persuasion strategies vary in effectiveness across contexts.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="reasoning">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2512.14691" tabindex="-1" aria-hidden="true"><img src="images/mmgr_intro.png" alt="MMGR: Multi-Modal Generative Reasoning Benchmark" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2512.14691">MMGR: Multi-Modal Generative Reasoning Benchmark and Evaluation</a></h3>
+        <p class="authors"><strong class="me">Haoyi Qiu</strong>*, Zefan Cai*, Tianyi Ma*, Haozhe Zhao*, Gengze Zhou, Kung-Hsiang Huang, Parisa Kordjamshidi, Minjia Zhang, Wen Xiao, Jiuxiang Gu, Nanyun Peng, Junjie Hu</p>
+        <p class="meta"><span class="venue">EMNLP, 2026</span><span class="tag tag-reasoning">Reasoning</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We propose MMGR, a principled evaluation framework for generative reasoning across abstract reasoning, embodied navigation, and physical commonsense, revealing that leading video and image models struggle with causal correctness and long-horizon spatial planning.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="safety">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2510.17247" tabindex="-1" aria-hidden="true"><img src="images/videobias_intro.png" alt="VideoBiasEval: Alignment Tuning and Social Bias in Video Diffusion Models" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2510.17247">From Preferences to Prejudice: The Role of Alignment Tuning in Shaping Social Bias in Video Diffusion Models</a></h3>
+        <p class="authors"><strong class="me">Haoyi Qiu</strong>*, Zefan Cai*, Haozhe Zhao*, Ke Wan, Jiachen Li, Jiuxiang Gu, Wen Xiao, Nanyun Peng, Junjie Hu</p>
+        <p class="meta"><span class="venue">TMLR, 2026</span><span class="tag tag-safety">Safety</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We introduce VideoBiasEval, a diagnostic framework that traces how social biases evolve through the alignment pipeline of video diffusion models. By training our own reward models and alignment-tuned diffusion models, we provide a full training recipe and reveal that alignment tuning not only strengthens representational biases but also makes them temporally stable across generated videos.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="multimodal">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2510.00536" tabindex="-1" aria-hidden="true"><img src="images/guikv_intro.png" alt="GUI-KV: Efficient GUI Agents via KV Cache Compression" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2510.00536">GUI-KV: Efficient GUI Agents via KV Cache with Spatio-Temporal Awareness</a></h3>
+        <p class="authors">Kung-Hsiang Huang, <strong class="me">Haoyi Qiu</strong>, Yutong Dai, Caiming Xiong, Chien-Sheng Wu</p>
+        <p class="meta"><span class="venue">TMLR, 2026</span><span class="tag tag-multimodal">Multimodal understanding</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We propose GUI-KV, a plug-and-play KV cache compression method for GUI agents that exploits spatial saliency and temporal redundancy, reducing decoding FLOPs by 38.9% while increasing step accuracy by 4.1% over full-cache baselines without retraining.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="safety">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2505.14972" tabindex="-1" aria-hidden="true"><img src="images/cross_intro.png" alt="CROSS: Multimodal Cultural Safety Evaluation and Alignment" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2505.14972">Multimodal Cultural Safety: Evaluation Framework and Alignment Strategies</a></h3>
+        <p class="authors"><strong class="me">Haoyi Qiu</strong>, Kung-Hsiang Huang, Ruichen Zheng, Jiao Sun, Nanyun Peng</p>
+        <p class="meta"><span class="venue">TMLR, 2025</span><span class="tag tag-safety">Safety</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We introduce CROSS, a benchmark of 1,284 multilingual visually grounded queries from 16 countries to assess cultural safety in LVLMs. We develop supervised fine-tuning with culturally grounded data and preference tuning with contrastive response pairs, substantially improving GPT-4o's cultural awareness (+60%) and compliance (+55%) while preserving general capabilities.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="reasoning">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2502.11492" tabindex="-1" aria-hidden="true"><img src="images/cogalign_intro.png" alt="CogAlign: Enhancing Visual Arithmetic in Vision Language Models" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2502.11492">Why Vision Language Models Struggle with Visual Arithmetic? Towards Enhanced Chart and Geometry Understanding</a></h3>
+        <p class="authors">Kung-Hsiang Huang, Can Qin, <strong class="me">Haoyi Qiu</strong>, Philippe Laban, Shafiq Joty, Caiming Xiong, Chien-Sheng Wu</p>
+        <p class="meta"><span class="venue">ACL Findings, 2025</span><span class="tag tag-reasoning">Reasoning</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We propose CogAlign, a post-training strategy inspired by Piaget's cognitive development theory that trains VLMs to recognize invariant properties under visual transformations. CogAlign outperforms supervised fine-tuning while requiring 60% less training data, significantly improving visual arithmetic and downstream chart and geometry understanding.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="safety">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2410.23252" tabindex="-1" aria-hidden="true"><img src="images/casal_intro.png" alt="CASA: Cultural and Social Awareness of LLM Web Agents" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2410.23252">Evaluating Cultural and Social Awareness of LLM Web Agents</a></h3>
+        <p class="authors"><strong class="me">Haoyi Qiu</strong>, Alexander R. Fabbri, Divyansh Agarwal, Kung-Hsiang Huang, Sarah Tan, Nanyun Peng, Chien-Sheng Wu</p>
+        <p class="meta"><span class="venue">NAACL Findings, 2025</span><span class="award">Best Paper Nomination</span><span class="tag tag-safety">Safety</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We introduce CASA, a benchmark for evaluating LLM web agents' cultural and social awareness across shopping and forum tasks, finding that agents achieve less than 10% awareness coverage with over 40% norm violation rates. We show that fine-tuning on culture-specific datasets enhances cross-region generalization, while prompting boosts complex task navigation.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="multimodal">
+      <a class="pub-fig" href="https://arxiv.org/abs/2403.12027" tabindex="-1" aria-hidden="true"><img src="images/chart_survey_intro.png" alt="Survey on Automatic Chart Understanding in the Era of Large Foundation Models" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/abs/2403.12027">From Pixels to Insights: A Survey on Automatic Chart Understanding in the Era of Large Foundation Models</a></h3>
+        <p class="authors">Kung-Hsiang Huang, Hou Pong Chan, Yi R. Fung, <strong class="me">Haoyi Qiu</strong>, Mingyang Zhou, Shafiq Joty, Shih-Fu Chang, Heng Ji</p>
+        <p class="meta"><span class="venue">TKDE, 2024</span><span class="tag tag-multimodal">Multimodal understanding</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We provide a comprehensive survey of automatic chart understanding in the era of large foundation models, covering tasks, evaluation metrics, modeling strategies, and future directions including domain-specific charts and agent-oriented settings.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="safety">
+      <a class="pub-fig" href="https://openreview.net/pdf?id=VZQmIoDGBG" tabindex="-1" aria-hidden="true"><img src="images/safeworld_intro.png" alt="SafeWorld: Geo-Diverse Safety Alignment" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://openreview.net/pdf?id=VZQmIoDGBG">SafeWorld: Geo-Diverse Safety Alignment</a></h3>
+        <p class="authors">Da Yin*, <strong class="me">Haoyi Qiu</strong>*, Kung-Hsiang Huang, Kai-Wei Chang, Nanyun Peng</p>
+        <p class="meta"><span class="venue">NeurIPS, 2024</span><span class="tag tag-safety">Safety</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We introduce SafeWorld, a benchmark of 2,342 queries grounded in human-verified cultural norms and legal policies from 50 countries, along with a multi-dimensional safety evaluation framework. Using synthesized preference pairs for DPO, our trained SafeWorldLM outperforms GPT-4o across all evaluation dimensions by a large margin.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="safety">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2401.00763.pdf" tabindex="-1" aria-hidden="true"><img src="images/measure_bias.png" alt="BiasPainter: Measuring Social Bias in Image Generation Models" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2401.00763.pdf">New Job, New Gender? Measuring the Social Bias in Image Generation Models</a></h3>
+        <p class="authors">Wenxuan Wang, Haonan Bai, Jen-tse Huang, Yuxuan Wan, Youliang Yuan, <strong class="me">Haoyi Qiu</strong>, Nanyun Peng, Michael R Lyu</p>
+        <p class="meta"><span class="venue">ACM MM, 2024 (Oral)</span><span class="tag tag-safety">Safety</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We propose BiasPainter, an evaluation framework that automatically triggers and detects social biases in image generation models across 62 professions, 39 activities, 57 objects, and 70 personality traits, achieving 90.8% accuracy on automatic bias detection.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="multimodal">
+      <a class="pub-fig" href="https://arxiv.org/pdf/2404.13874" tabindex="-1" aria-hidden="true"><img src="images/valor_eval_intro.png" alt="VALOR-Eval: Coverage and Faithfulness Evaluation of Large Vision-Language Models" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/pdf/2404.13874">VALOR-Eval: Holistic Coverage and Faithfulness Evaluation of Large Vision-Language Models</a></h3>
+        <p class="authors"><strong class="me">Haoyi Qiu</strong>*, Wenbo Hu*, Zi-Yi Dou, Nanyun Peng</p>
+        <p class="meta"><span class="venue">ACL Findings, 2024</span><span class="tag tag-multimodal">Multimodal understanding</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We introduce a multi-dimensional benchmark and LLM-based evaluation framework for LVLM hallucination that covers objects, attributes, and relations, generalizing the CHAIR metric to jointly assess both faithfulness and coverage of model outputs.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub">
+      <a class="pub-fig" href="https://arxiv.org/abs/2311.09521" tabindex="-1" aria-hidden="true"><img src="images/amrfact.png" alt="AMRFact: AMR-Driven Summarization Factuality Evaluation" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/abs/2311.09521">AMRFact: Enhancing Summarization Factuality Evaluation with AMR-Driven Negative Samples Generation</a></h3>
+        <p class="authors"><strong class="me">Haoyi Qiu</strong>, Kung-Hsiang Huang*, Jingnong Qu*, Nanyun Peng</p>
+        <p class="meta"><span class="venue">NAACL, 2024 (Oral)</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We propose AMRFact, a framework that leverages Abstract Meaning Representations to generate coherent factually inconsistent summaries with high error-type coverage for training factual consistency evaluators, significantly outperforming previous systems on the AggreFact-SOTA benchmark.</p>
+        </details>
+      </div>
+    </article>
+    <article class="pub" data-tag="safety">
+      <a class="pub-fig" href="https://arxiv.org/abs/2305.14711" tabindex="-1" aria-hidden="true"><img src="images/clipscore-bias.png" alt="Gender Biases in Automatic Evaluation Metrics for Image Captioning" loading="lazy"></a>
+      <div class="pub-body">
+        <h3><a href="https://arxiv.org/abs/2305.14711">Gender Biases in Automatic Evaluation Metrics for Image Captioning</a></h3>
+        <p class="authors"><strong class="me">Haoyi Qiu</strong>, Zi-Yi Dou, Tianlu Wang, Asli Celikyilmaz, Nanyun Peng</p>
+        <p class="meta"><span class="venue">EMNLP, 2023</span><span class="tag tag-safety">Safety</span></p>
+        <details class="abstract">
+          <summary>Abstract</summary>
+          <p>We conduct a systematic study of gender biases in model-based evaluation metrics (e.g., CLIPScore) for image captioning, revealing that using biased metrics as rewards in RL training propagates and amplifies stereotypes in generation models. We propose an effective debiasing method without hurting correlation with human judgments.</p>
+        </details>
+      </div>
+    </article>
+  </div>
+</section>
 
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-            <tr>
-            <td style="padding:10px;width:100%;vertical-align:middle">
-              <heading>Education Experience</heading>
-            </td>
-          </tr>
-        </tbody></table>
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:100%;vertical-align:middle">
-              <strong>University of California, Los Angeles</strong>
-              <br>
-              Master of Science in Computer Science
-              <br>
-              Thesis: <a href="https://escholarship.org/content/qt50h7r35p/qt50h7r35p.pdf/" target="_blank"> Geo-Diverse Safety and Cultural Alignment in Language Models: Evaluating Cultural Awareness and Norm Sensitivity</a>
-              <br>
-              Sep 2022 - June 2024
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:100%;vertical-align:middle">
-              <strong>University of Michigan</strong>
-              <br>
-              Bachelor of Science in Computer Science, Pure Mathematics, and Statistics
-              <br>
-              May 2022
-            </td>
-          </tr>
-        </tbody></table>
+<!-- ===== Experience ===== -->
+<section class="two" id="experience">
+  <div>
+    <h2>Work Experience</h2>
+    <ul class="entries">
+      <li>
+        <span class="where"><strong>Meta Superintelligence Labs</strong></span>
+        <span class="what">Research Scientist Intern</span>
+        <span class="when">Jun. 2026 - Sep. 2026</span>
+      </li>
+      <li>
+        <span class="where"><strong>Salesforce AI Research</strong></span>
+        <span class="what">Research Scientist Intern</span>
+        <span class="when">Jun. 2025 - Sep. 2025</span>
+      </li>
+      <li>
+        <span class="where"><strong>Salesforce AI Research</strong></span>
+        <span class="what">Research Scientist Intern</span>
+        <span class="when">Jun. 2024 - Sep. 2024</span>
+      </li>
+      <li>
+        <span class="where"><strong>Meta</strong></span>
+        <span class="what">Machine Learning Engineer Intern</span>
+        <span class="when">May. 2022 - Aug. 2022</span>
+      </li>
+      <li>
+        <span class="where"><strong>Goldman Sachs</strong></span>
+        <span class="what">Engineering Summer Analyst</span>
+        <span class="when">Jun. 2021 - Aug. 2021</span>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <h2>Education</h2>
+    <ul class="entries">
+      <li>
+        <span class="where"><strong>University of California, Los Angeles</strong></span>
+        <span class="what">Master of Science in Computer Science</span>
+        <span class="what">Thesis: <a href="https://escholarship.org/content/qt50h7r35p/qt50h7r35p.pdf/" target="_blank"> Geo-Diverse Safety and Cultural Alignment in Language Models: Evaluating Cultural Awareness and Norm Sensitivity</a></span>
+        <span class="when">Sep 2022 - June 2024</span>
+      </li>
+      <li>
+        <span class="where"><strong>University of Michigan</strong></span>
+        <span class="what">Bachelor of Science in Computer Science, Pure Mathematics, and Statistics</span>
+        <span class="when">May 2022</span>
+      </li>
+    </ul>
+    <h2>Teaching</h2>
+    <ul class="entries">
+      <li>
+        <span class="where"><strong>Teaching Assistant: Intro to AI</strong> (EECS 492)</span>
+        <span class="when">University of Michigan, FA 2021</span>
+      </li>
+    </ul>
+  </div>
+</section>
 
-        <br>
-        <br>
+<section class="two" id="awards">
+  <div>
+    <h2>Awards</h2>
+    <ul class="plain">
+      <li>Amazon Fellowship (2026)</li>
+      <li><a href="https://commencement.seas.ucla.edu/2025-awards/" target="_blank"> Outstanding Graduate MS Student</a> (1 per department) - UCLA CS Department, 05/2025</li>
+      <li><a href="https://2023.emnlp.org/program/outstanding_reviewers/" target="_blank"> Outstanding Reviewer Award</a> (0.74%) - EMNLP 2023</li>
+      <li>James B. Angell Scholar, University Honors, EECS Scholar, The University of Michigan</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Service</h2>
+    <ul class="plain">
+      <li>Area Chair: ACL Rolling Review 2025</li>
+      <li>Reviewer: ICLR 2025, ACL Rolling Review 2024, EMNLP 2023</li>
+    </ul>
+  </div>
+</section>
 
+<footer>© Haoyi Qiu</footer>
+</main>
 
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-            <tr>
-            <td style="padding:10px;width:100%;vertical-align:middle">
-              <heading>Teaching Experience</heading>
-            </td>
-          </tr>
-        </tbody></table>
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:95%;vertical-align:middle">
-              <strong>Teaching Assistant: Intro to AI</strong> (EECS 492)
-              <br>
-              University of Michigan, FA 2021
-            </td>
-          </tr>
-        </tbody></table>
+<script>
+(() => {
+  // theme: same storage key as the blog, so the choice carries over
+  const root = document.documentElement, btn = document.getElementById('theme');
+  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const label = () => { btn.textContent = isDark() ? 'Light' : 'Dark'; };
+  btn.addEventListener('click', () => {
+    const t = isDark() ? 'light' : 'dark';
+    root.dataset.theme = t;
+    try { localStorage.setItem('mk-theme', t); } catch (e) { /* storage unavailable */ }
+    label();
+  });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', label);
+  label();
 
-        <br>
-        <br>
-
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-            <tr>
-            <td style="padding:10px;width:100%;vertical-align:middle">
-              <heading>Working Experience</heading>
-            </td>
-          </tr>
-        </tbody></table>
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:10px;width:75%;vertical-align:middle">
-              <strong>Meta Superintelligence Labs</strong>
-              <br>
-              Research Scientist Intern
-              <br>
-              Jun. 2026 - Sep. 2026
-              <p></p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <!-- <td style="padding:20px;width:25%;vertical-align:middle">
-              <div class="one">
-                <img src='images/meta.png' width="150">
-              </div>
-            </td> -->
-            <td style="padding:10px;width:75%;vertical-align:middle">
-              <strong>Salesforce AI Research</strong>
-              <br>
-              Research Scientist Intern
-              <br>
-              Jun. 2025 - Sep. 2025
-              <p></p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <!-- <td style="padding:20px;width:25%;vertical-align:middle">
-              <div class="one">
-                <img src='images/meta.png' width="150">
-              </div>
-            </td> -->
-            <td style="padding:10px;width:75%;vertical-align:middle">
-              <strong>Salesforce AI Research</strong>
-              <br>
-              Research Scientist Intern
-              <br>
-              Jun. 2024 - Sep. 2024
-              <p></p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <!-- <td style="padding:20px;width:25%;vertical-align:middle">
-              <div class="one">
-                <img src='images/meta.png' width="150">
-              </div>
-            </td> -->
-            <td style="padding:10px;width:75%;vertical-align:middle">
-              <strong>Meta</strong>
-              <br>
-              Machine Learning Engineer Intern
-              <br>
-              May. 2022 - Aug. 2022
-              <p></p>
-            </td>
-          </tr>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <!-- <td style="padding:20px;width:25%;vertical-align:middle">
-              <div class="one">
-                <img src='images/gs.png' width="150">
-              </div>
-            </td> -->
-            <td style="padding:10px;width:75%;vertical-align:middle">
-              <strong>Goldman Sachs</strong>
-              <br>
-              Engineering Summer Analyst
-              <br>
-              Jun. 2021 - Aug. 2021
-              <p></p>
-            </td>
-          </tr> 
-          <!-- <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:25%;vertical-align:middle">
-              <div class="one">
-                <img src='images/Fitly.png' width="100">
-              </div>
-            </td>
-            <td style="padding:20px;width:75%;vertical-align:middle">
-              <strong>Fitly</strong>
-              <br>
-              Machine Learning Intern
-              <br>
-              Nov. 2019 - Apr. 2020
-              <p></p>
-              In this internship, I designed and implemented a personalized model to provide more accurate food classification results for users.
-            </td>
-          </tr>  -->
-        </tbody></table>
-        <!-- <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-            <tr>
-            <td style="padding:20px;width:100%;vertical-align:middle">
-              <heading>Others</heading>
-            </td>
-          </tr>
-        </tbody></table>
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-          <tr onmouseout="lssr_stop()" onmouseover="lssr_start()">
-            <td style="padding:20px;width:25%;vertical-align:middle">
-              <div class="one">
-                <img src='images/IntelAkraino.png' width="160">
-              </div>
-              <script type="text/javascript">
-                function lssr_start() {
-                  document.getElementById('lssr_image').style.opacity = "1";
-                }
-
-                function lssr_stop() {
-                  document.getElementById('lssr_image').style.opacity = "0";
-                }
-                lssr_stop()
-              </script>
-            </td>
-            <td style="padding:20px;width:75%;vertical-align:middle">
-                <papertitle>Intel Akraino: Edge Cloud Game Architecture</papertitle>
-              <br>
-              <strong>Undergraduate Capstone Team Gold Prize</strong>
-              <br>
-              UM-SJTU Joint Institute, Shanghai Jiao Tong University,
-              August 2019
-              <p></p>
-              <p>
-                In this capstone project, we designed a framework to boost web communications between terminal devices and servers by introducing edge servers. We use kubernets to organize edge servers as different containers. The edge servers are responsible for computing and sending information to terminal devices, leading to more efficient performance.
-              </p>
-            </td>
-          </tr> 
-        </tbody></table> -->
-
-        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-          <tr>
-            <td style="padding:0px">
-               <br>
-               <p style="text-align:right;font-size:small;">
-                This website is built using the source code from Jon Barron's <a href="https://jonbarron.info/">public academic website</a>. 
-              </p>
-            </td>
-          </tr>
-        </tbody></table>
-      </td>
-    </tr>
-  </table>
+  // project filter
+  const pubs = [...document.querySelectorAll('#pubs .pub')];
+  const buttons = [...document.querySelectorAll('#filters button')];
+  buttons.forEach(b => b.addEventListener('click', () => {
+    const f = b.dataset.filter;
+    buttons.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    pubs.forEach(p => { p.hidden = f !== 'all' && p.dataset.tag !== f; });
+  }));
+})();
+</script>
 </body>
-
 </html>
