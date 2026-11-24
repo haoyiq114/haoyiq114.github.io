@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turning the Mismatch Knob</title>
+<meta name="description" content="We post-train a Latent Recurrent Transformer with existing RL methods: where plain GRPO trains, where it collapses, and which corrections keep it stable, in synchronous and asynchronous training.">
+<meta property="og:title" content="Turning the Mismatch Knob: Sync and Async RL on a Latent Recurrent Transformer">
+<meta property="og:description" content="What happens when you post-train a Latent Recurrent Transformer with existing RL methods, synchronously and asynchronously.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://haoyiq114.github.io/blog/mismatch-knob/card.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:image:alt" content="Two diagrams of two tokens with four layers each: a standard transformer, and a Latent Recurrent Transformer whose last layer of token t feeds every layer of token t+1.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://haoyiq114.github.io/blog/mismatch-knob/card.png">
+<link rel="icon" href="../../images/koala-emoji.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="style.css?v=20261123c">
+</head>
+<body>
+<div class="topbar">
+  <a href="../../">Haoyi Qiu</a>
+  <button class="theme" id="theme" type="button" aria-label="Switch light or dark theme">Dark</button>
+</div>
+
+
+
+<main>
+<header class="post col">
+  <h1>Turning the Mismatch Knob: Sync and Async RL on a Latent Recurrent Transformer</h1>
+  <p class="byline">Haoyi Qiu · November 23, 2026 · <span id="read-time">15 min read</span></p>
+</header>
+
+<div class="shell">
+<aside class="side-toc-wrap">
+<nav class="side-toc" aria-label="Table of contents">
+  <span class="toc-marker" aria-hidden="true"></span>
+  <ol>
+    <li><a href="#intro">A model that disagrees with itself</a></li>
+    <li><a href="#lrt">How LRT trains and how it generates</a></li>
+    <li><a href="#measure">Measuring the mismatch</a></li>
+    <li><a href="#sync">Sync RL</a></li>
+    <li><a href="#async">Async RL</a></li>
+    <li><a href="#ceiling">What RL did not do here</a></li>
+    <li><a href="#future">Future work</a></li>
+    <li><a href="#refs">References</a></li>
+  </ol>
+</nav>
+</aside>
+
+
+<div class="tldr col">
+  <span class="label">TL;DR</span>
+  <p>The Latent Recurrent Transformer (LRT) is a new architecture, and we wanted to know what happens when you post-train it with existing RL methods: GRPO, with and without the published corrections for rollout–trainer mismatch, synchronously and asynchronously. LRT generates with a recurrence but trains on a parallel approximation of it, so it carries a built-in <em>training–inference mismatch</em>, and how large it is depends on how many passes the rollout and the trainer run. At the default pass counts, plain GRPO trains through an epoch. With fewer passes, or with rollout weights 16 updates stale, it collapses, and the per-token log-probability gap between trainer and rollout in the first 20 updates already tells the two cases apart. Score centering keeps every setting stable and costs no accuracy.</p>
+</div>
+
+<nav class="toc col" aria-label="Contents">
+  <span class="label">Contents</span>
+  <ol>
+    <li><a href="#intro">A model that disagrees with itself</a></li>
+    <li><a href="#lrt">How LRT trains and how it generates</a></li>
+    <li><a href="#measure">Measuring the mismatch</a></li>
+    <li><a href="#sync">Sync RL: which settings collapse, and what fixes them</a></li>
+    <li><a href="#async">Async RL: how much staleness each method survives</a></li>
+    <li><a href="#ceiling">What RL did not do here</a></li>
+    <li><a href="#future">Future work</a></li>
+    <li><a href="#refs">References</a></li>
+  </ol>
+</nav>
+
+<article class="col">
+<h2 id="intro">A model that disagrees with itself</h2>
+<p><strong>Recurrent transformers are back.</strong> Looped models such as <a href="https://thinkingmachines.ai/news/inkling-2-mini/">Inkling 2 Mini</a> run some layers several times per token, and <a href="https://arxiv.org/abs/2605.26797">latent-recurrent models</a> pass a hidden state from one token to the next. <em>Most of the attention so far has gone to architecture and pretraining; RL post-training has barely been touched.</em> This post takes one of these models, the <strong>Latent Recurrent Transformer (LRT)</strong>, and asks a plain question: what happens when you post-train it with the RL methods people already use?</p>
+<p>We did not design a new algorithm. We ran GRPO as it is, alone and with the published corrections for a mismatch between rollout and trainer (truncated importance sampling, score centering, and combinations built on them), both with fresh rollout weights and with stale ones, as in asynchronous training.</p>
+<p>One property of LRT makes this more than a routine check. It trains with a few parallel refinement passes over the whole sequence, but generates text recurrently, one token at a time. RL post-training assumes that the policy that generates the rollouts and the policy the trainer updates are identical. In a standard transformer they differ only slightly, through numerical differences between inference and training code or through stale weights in asynchronous pipelines. In LRT the difference is built in, and its size depends on two numbers we choose: how many passes the rollout spends reading the prompt, and how many passes the trainer uses to score the response. Across our settings, the per-token log-probability gap between rollout and trainer runs from 0.004 to 0.073.</p>
+<p>Here is what we saw:</p>
+<ul class="findings">
+  <li><strong>Plain GRPO trains only when both sides run enough passes.</strong> With at least 2 prefill passes and at least 3 trainer passes, which includes the default of 3 and 3, uncorrected GRPO trains through an epoch. In the other 10 of 16 settings it collapses.</li>
+  <li><strong>The gap in the first 20 updates tells which.</strong> Every uncorrected run that trained through the epoch started with a per-token gap of 0.011 or less; every one that collapsed started at 0.019 or more.</li>
+  <li><strong>Stale rollout weights do the same thing.</strong> Refreshing rollout weights every 2 or 4 updates is harmless. Every 16 updates collapses uncorrected GRPO; every 64 also breaks TIS, and only the methods built on SC survive.</li>
+  <li><strong>Score centering keeps every setting stable and costs no accuracy.</strong> Every score-centering (SC) variant kept all 16 settings stable, at the same 63–67 on GSM8K that uncorrected GRPO reaches when it survives. TIS alone slips with a one-pass trainer.</li>
+  <li><strong>Up next: raising the ceiling.</strong> In our runs, one epoch of RL made the model more consistent but did not let it solve many more problems: with 8 samples per problem, average accuracy rose 10–13 points, but the share of problems solved at least once rose only about 2. Raising that ceiling is the subject of our next post.</li>
+</ul>
+
+<h2 id="lrt">How LRT trains and how it generates</h2>
+<p>In a standard transformer, the first layer of a new token never sees what the last layer concluded about the previous one. LRT adds one pathway to a standard decoder-only transformer: <strong>the hidden state of token <em>t</em> at a chosen source layer is fed into the layers of token <em>t</em>+1</strong>, through the attention keys and values and the residual stream (<a href="https://arxiv.org/abs/2605.26797">Huang et al., 2026</a>). At inference this memory is free, because the state was already computed for the previous token. Each new token still costs one forward pass. That is the appeal: in the paper, LRT matches the language-modeling loss of a transformer that runs its layers three times per token, while decoding in one pass per token with about 9% extra latency.</p>
+</article>
+
+<figure class="wide" id="fig-arch">
+  <p class="fig-title">Three ways information moves between two tokens</p>
+  <p class="fig-sub">Two tokens, four layers each (L1 at the bottom). Highlighted: the path each design adds.</p>
+  <div class="scroll"><div class="chart" id="c-arch"></div></div>
+  <figcaption>Dashed: attention to earlier tokens through the KV cache, layer by layer. Black loop: a looped model repeats its middle layers on the same token. Blue: LRT's memory path; in our model the last layer of token <em>t</em> is fed into every layer of token <em>t</em>+1.</figcaption>
+</figure>
+
+<article class="col">
+<p>Training cannot follow that chain token by token: unrolling it exactly would be backpropagation through time over every sequence, and would throw away the parallelism that makes pretraining fast. The paper trains with a parallel approximation instead, and our model uses the variant it calls <em>full-sequence refinement</em>. An initialization pass processes the whole sequence with no memory. Each refinement pass then recomputes every position in parallel, reading the memory that the previous pass produced one position to its left. In the paper, the loss is averaged over all passes.</p>
+</article>
+
+<figure class="wide" id="fig-refine">
+  <p class="fig-title">Training sees a truncated recurrence; decoding runs it in full</p>
+  <p class="fig-sub">Each circle is the state of one position in one pass, and each line hands that state's memory to the next position. Pick the trainer's passes <em>K</em> and the rollout's prefill passes <em>P</em>, then move across the figure to pick a position. Blue marks the states that position's memory comes from: the longer the blue chain, the further back its memory reaches.</p>
+  <div class="controls">
+    <div><span class="group-label">Trainer passes <em>K</em></span><div class="seg" id="k-seg" role="group" aria-label="Trainer passes K"></div></div>
+    <div><span class="group-label">Prefill passes <em>P</em></span><div class="seg" id="p-seg" role="group" aria-label="Prefill passes P"></div></div>
+  </div>
+  <div class="legend" id="refine-legend">
+    <span class="lg"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" style="fill:var(--bg);stroke:var(--axis)"/></svg>a position's state in one pass</span>
+    <span class="lg"><svg width="24" height="14" viewBox="0 0 24 14" aria-hidden="true"><line x1="2" y1="11" x2="22" y2="3" style="stroke:var(--axis);stroke-width:1.4"/></svg>memory handed to the next position</span>
+    <span class="lg"><svg width="30" height="14" viewBox="0 0 30 14" aria-hidden="true"><line x1="5" y1="7" x2="25" y2="7" style="stroke:var(--m-sc);stroke-width:1.8"/><circle cx="5" cy="7" r="4.5" style="fill:var(--m-sc)"/><circle cx="25" cy="7" r="4.5" style="fill:var(--m-sc)"/></svg>where the selected position's memory comes from</span>
+  </div>
+  <div class="scroll"><div class="chart" id="c-refine"></div></div>
+  <div class="readout" id="refine-readout"></div>
+  <figcaption>After the full-sequence refinement figure of Huang et al. (2026). The paper counts only the refinement passes that follow the first pass, so its <em>K</em> is one less than ours. The prompt is read the same approximate way as in training; only the generated tokens get the exact recurrence. The readout is the gap we measured for that pair of settings without any correction.</figcaption>
+</figure>
+
+<article class="col">
+<p>The consequence is the whole story of this post. With <em>K</em> trainer passes, memory can travel at most <em>K</em> − 1 positions, so <strong>training sees a truncated version of the recurrence</strong>. <strong>Decoding runs the recurrence in full</strong>: it behaves like a parallel forward with as many passes as there are tokens. The model you train and the model you sample from are cousins, not twins. The prompt sits in between. It is read with <em>P</em> parallel prefill passes, then decoding continues from the last prompt state.</p>
+<p>Our model uses the paper's 20-layer configuration (width 1,280, 10 attention heads, 2,048-token context, 32,768-token vocabulary) with a mixture-of-experts MLP: 8 experts with 2 active per token, plus one shared expert. It follows the paper's pretraining recipe (the nanochat stack on FineWeb-Edu) for 18,887 steps with 3 passes, initialization plus 2 refinements. Fine-tuning keeps the same 3 passes and runs on OpenMathInstruct-2 (the 5M split) for 4,734 steps of 524,288 tokens. RL starts from that checkpoint.</p>
+<p><strong>How this differs from a looped transformer.</strong> A looped transformer such as <a href="https://thinkingmachines.ai/news/inkling-2-mini/">Inkling 2 Mini</a> recurs in depth: it runs its middle layers three times on the same token before emitting it. That costs more compute per token at inference, but training unrolls exactly the same loops, so rollouts and training compute the same function, up to the usual numerical noise. LRT recurs across tokens instead, pays for its extra passes only in training, and trains on an approximation of what it runs at inference. That approximation is the knob.</p>
+
+<h2 id="measure">Measuring the mismatch</h2>
+<p><strong>On every training batch we log the gap, the mean absolute difference between the trainer's and the rollout's log-probability of each response token.</strong> A gap of 0.01 means the two are on average about 1% apart in the probability they give a token. We average it over the first 20 updates, long before any run collapses. Across the 16 settings it runs from 0.004 to 0.073. Runs with a correction start within about 12% of these values, so the early gap is a property of the setting, not of the loss.</p>
+</article>
+
+<figure class="wide" id="fig-gap">
+  <p class="fig-title">The gap is set by the pass counts</p>
+  <p class="fig-sub">Mean per-token gap over updates 1–20 of each uncorrected run. Hover a cell for its outcome.</p>
+  <div class="scroll"><div class="chart" id="c-gap"></div></div>
+  <figcaption>Each cell is one uncorrected run: the 16 combinations of rollout prefill passes and trainer passes, plus 4 replay runs with 3 trainer passes. A red dot marks the runs that collapsed.</figcaption>
+</figure>
+
+<article class="col">
+<ul>
+  <li><strong>The trainer's pass count matters most.</strong> With one trainer pass, the memory pathway is never used, and the gap is about 0.07 whatever the rollout did. With the prefill matched to the trainer, 2, 3 and 4 passes bring it to 0.019, 0.007 and 0.004.</li>
+  <li><strong>For a given trainer, the gap is smallest when the prefill uses the same number of passes.</strong> This holds in all four columns. More prefill passes than trainer passes do not help: with a 2-pass trainer the gap rises from 0.019 at prefill 2 to 0.023 at prefill 4.</li>
+  <li><strong>A one-pass prefill keeps the gap at 0.036 or more, however many passes the trainer runs.</strong> The rollout read the prompt without memory, and no number of trainer passes reproduces that.</li>
+  <li><strong>Replay almost closes the gap.</strong> Feeding the trainer the recurrent states the rollout actually produced, the fix proposed in the LRT paper, gives 0.003 in every row. We attribute what remains to numerical differences between the two code paths.</li>
+</ul>
+<p>The six settings at 0.010 or below, two or more prefill passes with three or more trainer passes, are the ones where uncorrected GRPO trains. The standard setting, prefill 3 with a 3-pass trainer, sits at 0.007.</p>
+
+<h2 id="sync">Sync RL: which settings collapse, and what fixes them</h2>
+<div class="takeaway">
+  <span class="label">Main takeaway</span>
+  <p><strong>In synchronous GRPO, the pass counts determined whether uncorrected training survived the epoch.</strong> Uncorrected runs collapse in 10 of 16 settings. Every correction we tried keeps all 16 alive, but only the ones built on SC also keep their accuracy.</p>
+</div>
+<p>Each run is one epoch of GRPO from the same fine-tuned checkpoint, with every rollout sampled from the latest weights, and each setting was run once. The data are 5,192 GSM8K and MATH (levels 1–3) training problems that the starting model solves 20–80% of the time. One epoch uses 4,864 of them, as 304 updates of 16 problems × 16 rollouts, at temperature 1 with at most 768 new tokens, and a rollout earns reward 1 when its final answer is correct. Between runs, only the rollout's prefill passes, the trainer's passes and the loss change.</p>
+<p>We compared four corrections to the per-token GRPO loss. For each response token <em>y</em>, <em>p</em> is the trainer's next-token distribution, <em>q</em> the rollout's, and <em>A</em> the advantage: the response's reward minus the mean reward of its problem's 16 rollouts.</p>
+<table class="losses">
+  <thead><tr><th>Method</th><th>Per-token loss</th></tr></thead>
+  <tbody>
+    <tr><td>No correction</td><td><span data-tex="-A\,\log p(y)"></span></td></tr>
+    <tr><td>TIS</td><td><span data-tex="-A\;\mathrm{sg}\big[\min\big(p(y)/q(y),\,C\big)\big]\,\log p(y)"></span></td></tr>
+    <tr><td>SC</td><td><span data-tex="-A\,\Big(\log p(y) - \textstyle\sum_{v} q(v)\log p(v)\Big)"></span></td></tr>
+    <tr><td>SC+TIS</td><td><span data-tex="-A\,\Big(\mathrm{sg}[w(y)]\log p(y) - \textstyle\sum_{v} \mathrm{sg}[q(v)\,w(v)]\log p(v)\Big)"></span></td></tr>
+    <tr><td>SC+KL</td><td><span data-tex="\mathcal{L}_{\mathrm{SC}} + \beta\,\mathrm{KL}(q\,\|\,p)"></span></td></tr>
+  </tbody>
+</table>
+<p class="note">sg is stop-gradient and the sums run over the whole vocabulary; <span data-tex="w(v) = \min\big(p(v)/q(v),\,C\big)"></span>, with <em>C</em> = 2 and β = 0.01. The KL term of SC+KL is estimated on the sampled token, as <span data-tex="\beta\,\big(\log q(y) - \log p(y)\big)"></span>.</p>
+<ul class="corrections">
+    <li><strong>SC</strong> (<a href="https://arxiv.org/abs/2609.20807">score centering</a>) makes each token's score average to zero under the rollout's own distribution. The uncorrected score does that only when <em>q</em> = <em>p</em>; otherwise the mismatch adds a bias that accumulates step after step, which the paper calls drift.</li>
+    <li><strong>TIS</strong> (<a href="https://fengyao.notion.site/off-policy-rl">truncated importance sampling</a>) reweights each token toward the trainer's distribution and caps the weight, trading some bias for bounded variance.</li>
+    <li><strong>SC+TIS</strong> applies both: the capped importance weight on the sampled token, and the centering term with the same weights.</li>
+    <li><strong>SC+KL</strong> also pulls <em>p</em> toward <em>q</em>, our simplified reading of Tinker's <a href="https://tinker-docs.thinkingmachines.ai/tinker/losses/stable-reinforce/">StableReinforce</a> loss.</li>
+    <li><strong>Replay</strong> is not a loss. It changes how <em>p</em> is computed: the trainer reads the recurrent states the rollout produced, so <em>p</em> matches <em>q</em> from the start. We ran it with the uncorrected loss.</li>
+  </ul>
+</article>
+
+<figure class="wide" id="fig-collapse">
+  <p class="fig-title">Every collapse follows the same script</p>
+  <p class="fig-sub">Prefill 3 with a 2-pass trainer: one uncorrected run and one SC run on the same data in the same order. Hover to read both runs at any update.</p>
+  <div class="chart" id="c-collapse"></div>
+  <figcaption>The shaded band in the top panel is 0.011–0.019, the range between the largest early gap of a run that trained and the smallest of a run that collapsed. Dotted lines mark update 90, where the uncorrected gap starts to climb, and update 157, by which its rollout accuracy is near zero.</figcaption>
+</figure>
+
+<article class="col">
+<p>In this run, training is healthy for about 90 updates with the gap near 0.02. Then the gap grows by nearly three orders of magnitude, answers stop finishing within the length limit, and rollout accuracy is near zero by update 157. The SC run uses the same setting, data and order, and its gap stays near 0.02 throughout.</p>
+</article>
+
+<figure class="wide xwide" id="fig-grid">
+  <p class="fig-title">Uncorrected runs die with a 1- or 2-pass trainer or a 1-pass prefill</p>
+  <p class="fig-sub">Rows are rollout prefill passes, columns are trainer passes; each line is one method, one run each, over 304 updates. Switch the metric, toggle methods, and hover a panel to read values.</p>
+  <div class="controls">
+    <div><span class="group-label">Metric</span><div class="seg" id="grid-metric" role="group" aria-label="Metric"></div></div>
+    <div class="chips" id="grid-methods" role="group" aria-label="Methods"></div>
+  </div>
+  <div class="scroll"><div class="chart" id="c-grid"></div></div>
+  <figcaption id="grid-note"></figcaption>
+</figure>
+
+<article class="col">
+<p>Training accuracy tells the same story as the gap. In the standard setting the five curves overlap: they climb from the SFT checkpoint's 59% to about 78% within 100 updates and end at 79–81%. Under a one-pass prefill, again with a 3-pass trainer, the corrected runs end at 73–78%, while the uncorrected run peaks at 74% around update 80 and falls to 5%. Among the uncorrected runs, a larger starting gap also meant an earlier collapse: training accuracy fell to half its peak at updates 121–149 with a 2-pass trainer and at least 2 prefill passes (gap 0.019–0.023), at 111–117 with a one-pass prefill and at least 2 trainer passes (0.036–0.040), and at 73–83 with a 1-pass trainer (0.068–0.073).</p>
+<p>We evaluate every final model greedily on the GSM8K test set (1,319 problems) and MATH-500, reading the answer from the last boxed expression and grading MATH-500 with math-verify. All synchronous runs are evaluated with prefill 3, whatever prefill they trained with, so the numbers compare directly. One score carries sampling noise of about 1.3 points on GSM8K and 2.2 on MATH-500 (one standard error), so differences of a point or two between cells mean little.</p>
+</article>
+
+<figure class="wide xwide" id="fig-scores">
+  <p class="fig-title">With a correction, every setting trains, at about the accuracy of the settings that never needed one</p>
+  <p class="fig-sub">Each cell is one run's score after one epoch. The first column is the SFT checkpoint without RL; the two blocks on the right are reference runs. Color shows the change from the SFT checkpoint evaluated the same way.</p>
+  <div class="controls">
+    <div><span class="group-label">Evaluated with</span><div class="seg" id="sc-eval" role="group" aria-label="Evaluation prefill"></div></div>
+  </div>
+  <div class="hm-key" id="sc-key"></div>
+  <div class="scroll"><div class="chart" id="c-scores"></div></div>
+  <figcaption id="scores-note"></figcaption>
+</figure>
+
+<article class="col">
+<p>The collapsed settings are exactly the ones whose gap sat at 0.019 or above in the heatmap: every one- or two-pass trainer, and a one-pass prefill with any trainer. With a correction, every setting trains. GSM8K lands at 63–67, the same range as uncorrected GRPO where it survives and up to 4 points above the starting 62.9. MATH-500 stays at about 39–45 (start 41.8).</p>
+<p>The one weak spot is TIS alone with a one-pass trainer, which ends at 55–62 on GSM8K, 3–9 points below SC, and at 27–38 on MATH-500, below the start on both. In synchronous training a correction is insurance, not an improvement: it buys stability, and the accuracy you get is the accuracy you would have had without the mismatch.</p>
+<p>Scored with the prefill each model trained with instead (switch above), the picture is the same, except that corrected runs with a one-pass prefill score a few points lower, because the evaluation itself reads the prompt in one pass (their SFT start is 58.0 rather than 62.9).</p>
+<p>The two blocks on the right of the figure are reference runs, both with 3 trainer passes: replay, where the trainer reads the recurrent states the rollout produced (no correction), and an exact rollout that reads the prompt token by token instead of in prefill passes (no correction and SC). All of them train normally and land at 64–67 on GSM8K, in the same range as the corrected runs.</p>
+
+<h2 id="async">Async RL: how much staleness each method survives</h2>
+<div class="takeaway">
+  <span class="label">Main takeaway</span>
+  <p><strong>In asynchronous GRPO, rollouts come from weights a few updates old; this staleness adds to the gap and does what missing passes do.</strong> In the standard setting, uncorrected runs survive a lag of 4 updates and collapse at 16; TIS survives 16 but breaks at 64; every method built on SC survives 64.</p>
+</div>
+<p>We emulate asynchronous training by sampling rollouts from a frozen copy of the weights that is refreshed every <em>N</em> updates (<em>N</em> = 2, 4, 16, 64), so the rollout policy is up to <em>N</em> − 1 updates old, with no queue and no rollout cut off midway. For scale, the <a href="https://sky-posttrain.github.io/score-centering-async-rl">Beyond Score Centering</a> post describes a common open-source setup with a batch age of about 31, and the setting of the score-centering paper with a staleness of 64. Everything else matches the synchronous runs, in the standard setting and in the one-pass-prefill stress setting.</p>
+<p>Staleness shows up in the gap we measured above. Refreshing every 2, 4 and 16 updates raises the standard setting's gap from 0.007 to 0.008, 0.011 and 0.035; the last is about what a one-pass prefill gives (0.037).</p>
+<p>Besides the four corrections above, we ran a fifth built for asynchronous training, from <a href="https://sky-posttrain.github.io/score-centering-async-rl">Beyond Score Centering</a>. It takes the place of plain SC+KL, which we did not rerun with stale weights. It adds to SC a KL penalty whose weight shrinks with the age <em>a</em> of the rollout policy, and drops every position where the two distributions already differ by more than τ:</p>
+<table class="losses">
+  <thead><tr><th>Method</th><th>Per-token loss</th></tr></thead>
+  <tbody>
+    <tr><td>SC+KL+mask</td><td><span data-tex="\mathbb{1}\big[D(s) \le \tau\big]\,\big(\mathcal{L}_{\mathrm{SC}} + \beta_a\,D(s)\big)"></span></td></tr>
+  </tbody>
+</table>
+<p class="note"><span data-tex="D(s) = \mathrm{KL}\big(q(\cdot\mid s)\,\|\,p(\cdot\mid s)\big)"></span> at position <em>s</em>, <span data-tex="\beta_a = 0.01/(a+1)"></span> and τ = 0.3. The post writes <span data-tex="\beta_0/a"></span>; our ages start at 0, so we divide by <em>a</em> + 1.</p>
+</article>
+
+<figure class="wide xwide" id="fig-async">
+  <p class="fig-title">How a stale run falls apart</p>
+  <p class="fig-sub">One panel per method; each line is one refresh interval. Rollout accuracy is measured on the stale rollout weights, so it moves in steps at each refresh.</p>
+  <div class="controls">
+    <div><span class="group-label">Setting</span><div class="seg" id="as-setting" role="group" aria-label="Setting"></div></div>
+    <div><span class="group-label">Metric</span><div class="seg" id="as-metric" role="group" aria-label="Metric"></div></div>
+  </div>
+  <div class="legend" id="as-legend"></div>
+  <div class="scroll"><div class="chart" id="c-async"></div></div>
+  <figcaption id="as-note"></figcaption>
+</figure>
+
+<article class="col">
+<p>The training curves show how stale weights break a run. With refreshes every 64 updates, rollouts come from the starting model for the first 64 updates, so rollout accuracy stays near 59% while the trainer drifts. At the first refresh the uncorrected run falls to zero and TIS to about 15%. SC+TIS jumps to 77%, while SC and SC+KL+mask sit at about 50–65% for most of the run and reach 72–77% near the end. TIS fails on its own but helps on top of SC: SC+TIS is the only method that recovers right at the first refresh, in the stress setting as well. With refreshes every 16 updates, only the uncorrected run degrades, sliding from 68% to 18%.</p>
+</article>
+
+<figure class="wide" id="fig-lag">
+  <p class="fig-title">In the standard setting, stale weights break uncorrected GRPO at 16 updates and TIS at 64</p>
+  <p class="fig-sub">Scores after one epoch, by how often the rollout weights are refreshed. Each number is one run; color shows the change from the SFT checkpoint evaluated the same way, as in the synchronous heatmap. Standard-setting runs are evaluated with prefill 3, stress-setting runs with prefill 1.</p>
+  <div class="hm-key" id="lag-key"></div>
+  <div class="scroll"><div class="chart" id="c-lag"></div></div>
+  <figcaption>× marks a run that collapsed in training. These were scored on 200 problems, except two that still finished most of their answers and were scored on the full test sets: the standard setting refreshed every 16 updates and the stress setting refreshed every 4. Hover a cell for the synchronous and SFT scores.</figcaption>
+</figure>
+
+<article class="col">
+<p>The scores after one epoch tell the same story. In the standard setting, lags of 2 and 4 cost nothing: every method ends at 64–66 on GSM8K, as in synchronous training. A lag of 16 collapses uncorrected GRPO. A lag of 64 also collapses TIS, while SC, SC+TIS and SC+KL+mask end at 61–63, a few points below their synchronous results and no higher than the SFT checkpoint's 62.9. At this lag RL stays stable but gains nothing on GSM8K, although training accuracy still ends at 72–77%. Under a one-pass prefill, uncorrected GRPO collapses at every lag, and the corrected methods behave as in the standard setting.</p>
+
+<h2 id="ceiling">What RL did not do here</h2>
+<p>Once training was stable, <strong>one epoch of RL made the model more consistent but barely more capable</strong>. With 8 samples per problem at temperature 1, it raised the average accuracy of a sample by 10–13 points but the share of problems solved at least once by only about 2. We measured this on two models from the standard setting, the SC run shown here and the SC+TIS run, and they give the same picture.</p>
+</article>
+
+<figure class="col" id="fig-passk">
+  <p class="fig-title">One epoch of RL lifted the average sample, not the ceiling</p>
+  <p class="fig-sub">8 samples per problem at temperature 1, before and after one epoch of RL. The average sample moves a lot; the share of problems it solves at least once in 8 tries barely moves.</p>
+  <div class="chart" id="c-passk"></div>
+  <figcaption>pass@8 is the share of problems solved at least once in 8 samples; avg@8 is the average accuracy of a single sample. Both at temperature 1. The shaded band is the gap that remains after this epoch: problems the model solves in some of its 8 samples but not reliably.</figcaption>
+</figure>
+
+<article class="col">
+<p>In these runs, RL made answers the model could already reach by sampling come up more often, but added few new ones. This is also why the greedy scores in the heatmaps move so little: before RL a sample at temperature 1 was far worse than the greedy answer (49.9 against 62.9 on GSM8K), and after RL the two are nearly level (63.2 against 64.4). Raising the ceiling is the subject of the next post.</p>
+
+<h2 id="future">Future work</h2>
+<ul>
+  <li><strong>Looped transformers.</strong> <a href="https://thinkingmachines.ai/news/inkling-2-mini/">Inkling 2 Mini</a> runs its middle layers three times per token, and Thinking Machines released a variable-loop version for research that keeps improving on serial reasoning out to ten loops, twice as many as it was trained with. That makes it tempting to roll out with more loops than the trainer uses. A looped model run that way should show the same kind of mismatch, and the same per-token gap may tell whether RL survives. This is a guess we have not tested.</li>
+  <li><strong>Real asynchronous systems.</strong> Our emulation refreshes frozen weights on a fixed schedule. Real pipelines keep a buffer of rollouts of different ages and have to choose which to train on first; the <a href="https://sky-posttrain.github.io/score-centering-async-rl">Beyond Score Centering</a> post finds that this choice matters.</li>
+  <li><strong>Numerical mismatch in standard transformers.</strong> Different implementations for rollout and training open the same kind of gap (<a href="https://fengyao.notion.site/off-policy-rl">Yao et al., 2025</a>), and so do quantized rollouts, which the <a href="https://arxiv.org/abs/2609.20807">score-centering paper</a> tests. Whether the early gap separates the runs that train from the ones that collapse there too is a cheap check.</li>
+  <li><strong>Replay with gradients through the memory.</strong> Our replay feeds the rollout's recurrent states to the trainer without gradients. Letting gradients flow through them would let RL train the recurrence itself.</li>
+  <li><strong>Seeds and longer runs.</strong> Every setting here is one run of one epoch. Repeats would show how sharp the split between settings is, and longer runs whether the settings that trained keep training.</li>
+  <li><strong>Raising the ceiling.</strong> In our runs RL mostly raised the average sample, while pass@8 barely moved. The next post asks which SFT and RL data raise pass@k itself.</li>
+</ul>
+
+<h2 id="refs">References</h2>
+<ol class="refs">
+  <li>Zeyi Huang, Xuehai He, LiLiang Ren, et al. <a href="https://arxiv.org/abs/2605.26797">Latent Recurrent Transformer: Architecture Exploration, Training Strategies, and Scaling Behavior</a>. arXiv:2605.26797, 2026.</li>
+  <li>Martin Marek and Max Ryabinin. <a href="https://arxiv.org/abs/2609.20807">Score Centering Stabilizes Off-policy Reinforcement Learning</a>. arXiv:2609.20807, 2026.</li>
+  <li>Qiuyang Mang and Yichuan Wang. <a href="https://sky-posttrain.github.io/score-centering-async-rl">Beyond Score Centering: What Else Can We Optimize in Async RL?</a> Blog post.</li>
+  <li>Feng Yao, Liyuan Liu, Dinghuai Zhang, Chengyu Dong, Jingbo Shang and Jianfeng Gao. <a href="https://fengyao.notion.site/off-policy-rl">Your Efficient RL Framework Secretly Brings You Off-Policy RL Training</a>. Blog post, August 2025.</li>
+  <li>Thinking Machines Lab. <a href="https://tinker-docs.thinkingmachines.ai/tinker/losses/stable-reinforce/">StableReinforce</a>. Tinker documentation.</li>
+  <li>Thinking Machines Lab. <a href="https://thinkingmachines.ai/news/inkling-2-mini/">Introducing Inkling 2 Mini</a>. November 2026.</li>
+  <li>Zhihong Shao, Peiyi Wang, Qihao Zhu, et al. <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models</a>. arXiv:2402.03300, 2024. (GRPO)</li>
+  <li>Shubham Toshniwal, Wei Du, Ivan Moshkov, et al. <a href="https://arxiv.org/abs/2410.01560">OpenMathInstruct-2: Accelerating AI for Math with Massive Open-Source Instruction Data</a>. arXiv:2410.01560, 2024.</li>
+  <li>Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, et al. <a href="https://arxiv.org/abs/2110.14168">Training Verifiers to Solve Math Word Problems</a>. arXiv:2110.14168, 2021. (GSM8K)</li>
+  <li>Dan Hendrycks, Collin Burns, Saurav Kadavath, et al. <a href="https://arxiv.org/abs/2103.03874">Measuring Mathematical Problem Solving With the MATH Dataset</a>. arXiv:2103.03874, 2021.</li>
+  <li>Hunter Lightman, Vineet Kosaraju, Yura Burda, et al. <a href="https://arxiv.org/abs/2305.20050">Let's Verify Step by Step</a>. arXiv:2305.20050, 2023. (MATH-500)</li>
+  <li>Hugging Face. <a href="https://github.com/huggingface/Math-Verify">Math-Verify</a>. GitHub.</li>
+  <li>Andrej Karpathy. <a href="https://github.com/karpathy/nanochat">nanochat</a>. GitHub, 2025.</li>
+</ol>
+
+<details class="cite">
+  <summary>Cite this post</summary>
+<pre>@misc{qiu2026mismatchknob,
+  author = {Qiu, Haoyi},
+  title  = {Turning the Mismatch Knob: Sync and Async RL on a Latent Recurrent Transformer},
+  year   = {2026},
+  month  = {November},
+  url    = {https://haoyiq114.github.io/blog/mismatch-knob/}
+}</pre>
+</details>
+
+<footer><a href="../../">← Haoyi Qiu</a></footer>
+</article>
+</div>
+</main>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="main.js?v=20261123c"></script>
+</body>
+</html>
