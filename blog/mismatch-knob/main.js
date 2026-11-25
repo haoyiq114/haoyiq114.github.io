@@ -200,12 +200,12 @@
      ========================================================= */
   function renderArch() {
     const el = $('#c-arch'), W = 700, H = 214;
-    const svg = svgIn(el, W, H, 'Three diagrams of two tokens with four layers each: a standard transformer, a looped transformer that repeats its middle layers, and LRT, whose last layer of token t feeds every layer of token t+1');
+    const svg = svgIn(el, W, H, 'Three diagrams of two tokens with four layers each: a standard transformer, a looped transformer that repeats its middle layers, and a recurrent transformer, whose last layer of token t feeds every layer of token t+1');
     const mk = markers(svg, 'arch', [['i', 'var(--ink)'], ['b', 'var(--m-sc)']]);
     const panels = [
       ['Standard transformer', 'Attention only, layer by layer', 'std'],
       ['Looped transformer', 'Middle layers run 3× per token', 'loop'],
-      ['Latent Recurrent Transformer', 'Last layer of t feeds every layer of t+1', 'lrt'],
+      ['Recurrent transformer', 'Last layer of t feeds every layer of t+1', 'lrt'],
     ];
     const nw = 40, nh = 14, L = 4, rowY = l => 160 - l * 30;   // layer l = 0..3, bottom to top
     panels.forEach(([title, desc, kind], pi) => {
@@ -250,7 +250,7 @@
   renders.push(renderArch);
 
   /* =========================================================
-     3. Refinement: K trainer passes vs P prefill passes + decoding
+     3. Refinement: K training passes vs P prefill passes + decoding
      ========================================================= */
   const ref = { K: 3, P: 3, col: 8 };
   function renderRefine() {
@@ -355,33 +355,42 @@
     const s = D.scores.own[`${pf}${k}${m}`];
     return s ? s[2] === 1 : false;
   }
+  // early gap of a corrected run: its first 10 logged points are updates 1–20 (stride 2)
+  const earlyGap = (pf, k, m) => m === 'none' ? D.gapgrid[`${pf}${k}`] : d3.mean(D.grid[`${pf}${k}${m}`].gap.slice(0, 10).filter(v => v != null));
   function renderGap() {
-    const el = $('#c-gap'), W = 410, H = 238;
-    const svg = svgIn(el, W, H, 'Heatmap of the per-token gap over updates 1–20 by rollout prefill passes and trainer passes, plus four replay runs; the gap grows as either side runs fewer passes, and the collapsed runs are marked');
-    const cw = 64, chh = 34, x0 = 52, y0 = 46, rx = x0 + 4 * cw + 18;
-    const head = (x, y, s) => svg.append('text').attr('x', x).attr('y', y).attr('text-anchor', 'middle').attr('class', 'ink').style('font-size', '12px').style('font-weight', 500).text(s);
-    head(x0 + 2 * cw, 14, 'Trainer passes');
-    head(rx + cw / 2, 14, 'Replay');
+    const el = $('#c-gap'), W = 664, H = 258;
+    const svg = svgIn(el, W, H, 'Two heatmaps of the per-token gap over updates 1–20 by rollout prefill passes and training passes: uncorrected runs and SC runs, plus a column of four replay runs. The gaps are almost the same in both; ten uncorrected runs collapsed and no SC run did');
+    const cw = 58, chh = 34, y0 = 64;
+    const head = (x, y, s, w) => svg.append('text').attr('x', x).attr('y', y).attr('text-anchor', 'middle').attr('class', 'ink').style('font-size', '12px').style('font-weight', w || 500).text(s);
     svg.append('text').attr('transform', `translate(14,${y0 + 2 * chh}) rotate(-90)`).attr('text-anchor', 'middle').attr('class', 'ink').style('font-size', '12px').style('font-weight', 500).text('Rollout prefill passes');
-    for (let k = 1; k <= 4; k++) svg.append('text').attr('x', x0 + (k - 1) * cw + cw / 2).attr('y', y0 - 9).attr('text-anchor', 'middle').attr('class', 'lbl').text(k);
-    svg.append('text').attr('x', rx + cw / 2).attr('y', y0 - 9).attr('text-anchor', 'middle').attr('class', 'lbl').text('trainer 3');
-    for (let pf = 1; pf <= 4; pf++) {
-      const y = y0 + (pf - 1) * chh;
-      svg.append('text').attr('x', x0 - 10).attr('y', y + chh / 2 + 4).attr('text-anchor', 'end').attr('class', 'lbl').text(pf);
-      const cells = [1, 2, 3, 4].map(k => ({ k, v: D.gapgrid[`${pf}${k}`], x: x0 + (k - 1) * cw, bad: collapsedSync(pf, k, 'none') }))
-        .concat([{ k: 'replay', v: D.gapreplay[pf], x: rx, bad: false }]);
-      cells.forEach(c => {
-        const col = seqColor(c.v), ink = inkOn(col);
-        const g = svg.append('g');
-        g.append('rect').attr('x', c.x + 1).attr('y', y + 1).attr('width', cw - 2).attr('height', chh - 2).attr('rx', 3).style('fill', col);
-        g.append('text').attr('x', c.x + cw / 2).attr('y', y + chh / 2 + 4).attr('text-anchor', 'middle').style('fill', ink).style('font-size', '11.5px').style('font-variant-numeric', 'tabular-nums').text(f3(c.v));
-        if (c.bad) g.append('circle').attr('cx', c.x + cw - 9).attr('cy', y + 9).attr('r', 3.6).style('fill', 'var(--bad)').style('stroke', 'var(--bg)').style('stroke-width', 1.6);
-        g.on('mousemove', ev => showTip(`<b>Prefill ${pf}, ${c.k === 'replay' ? 'replay, trainer 3' : `trainer ${c.k}`}</b>${row('', 'Gap, updates 1–20', f4(c.v))}${row('', 'Uncorrected run', c.bad ? 'collapsed' : 'trained normally')}`, ev))
-          .on('mouseleave', hideTip);
-      });
+    const cell = (x, y, v, bad, tipHead, outcome) => {
+      const col = seqColor(v), ink = inkOn(col);
+      const g = svg.append('g');
+      g.append('rect').attr('x', x + 1).attr('y', y + 1).attr('width', cw - 2).attr('height', chh - 2).attr('rx', 3).style('fill', col);
+      g.append('text').attr('x', x + cw / 2).attr('y', y + chh / 2 + 4).attr('text-anchor', 'middle').style('fill', ink).style('font-size', '11.5px').style('font-variant-numeric', 'tabular-nums').text(f3(v));
+      if (bad) g.append('circle').attr('cx', x + 8).attr('cy', y + 8).attr('r', 3).style('fill', 'var(--bad)').style('stroke', 'var(--bg)').style('stroke-width', 1.4);
+      g.on('mousemove', ev => showTip(`<b>${tipHead}</b>${row('', 'Gap, updates 1–20', f4(v))}${row('', 'Outcome', outcome)}`, ev)).on('mouseleave', hideTip);
+    };
+    const rowNums = x0 => { for (let pf = 1; pf <= 4; pf++) svg.append('text').attr('x', x0 - 10).attr('y', y0 + (pf - 1) * chh + chh / 2 + 4).attr('text-anchor', 'end').attr('class', 'lbl').text(pf); };
+    function panel(x0, m, name) {
+      head(x0 + 2 * cw, 14, name, 600);
+      svg.append('text').attr('x', x0 + 2 * cw).attr('y', 34).attr('text-anchor', 'middle').attr('class', 'lbl').text('Training passes');
+      for (let k = 1; k <= 4; k++) svg.append('text').attr('x', x0 + (k - 1) * cw + cw / 2).attr('y', y0 - 9).attr('text-anchor', 'middle').attr('class', 'lbl').text(k);
+      rowNums(x0);
+      for (let pf = 1; pf <= 4; pf++) for (let k = 1; k <= 4; k++) {
+        const bad = collapsedSync(pf, k, m);
+        cell(x0 + (k - 1) * cw, y0 + (pf - 1) * chh, earlyGap(pf, k, m), bad, `${name} · prefill ${pf}, trainer ${k}`, bad ? 'collapsed' : 'trained normally');
+      }
     }
-    // colour key under the trainer columns, collapse key under replay
-    const kx = x0, ky = y0 + 4 * chh + 24, kw = 4 * cw, steps = 60;
+    const xa = 52, xb = xa + 4 * cw + 44, xr = xb + 4 * cw + 34;
+    panel(xa, 'none', 'No correction');
+    panel(xb, 'sc', 'SC');
+    // replay: its own column on the right, uncorrected loss with a 3-pass trainer
+    head(xr + cw / 2, 14, 'Replay', 600);
+    svg.append('text').attr('x', xr + cw / 2).attr('y', y0 - 9).attr('text-anchor', 'middle').attr('class', 'lbl').text('trainer 3');
+    for (let pf = 1; pf <= 4; pf++) cell(xr, y0 + (pf - 1) * chh, D.gapreplay[pf], false, `Replay · prefill ${pf}, trainer 3`, 'trained normally');
+    // one centred key row: colour scale, then the collapse marker
+    const kw = 200, kx = (W - (kw + 40 + 70)) / 2, ky = y0 + 4 * chh + 26, steps = 60;
     for (let i = 0; i < steps; i++) {
       const v = Math.exp(Math.log(0.0025) + (Math.log(0.08) - Math.log(0.0025)) * i / (steps - 1));
       svg.append('rect').attr('x', kx + i * kw / steps).attr('y', ky).attr('width', kw / steps + 0.5).attr('height', 8).style('fill', seqColor(v));
@@ -389,8 +398,8 @@
     const kxs = d3.scaleLog().domain([0.0025, 0.08]).range([kx, kx + kw]);
     axisStyle(svg.append('g').attr('transform', `translate(0,${ky + 8})`).call(d3.axisBottom(kxs).tickValues([0.003, 0.01, 0.03, 0.08]).tickFormat(d3.format('~g')).tickSize(3)));
     svg.append('text').attr('x', kx).attr('y', ky - 6).attr('class', 'lbl').text('Gap per token, updates 1–20');
-    svg.append('circle').attr('cx', rx + 4).attr('cy', ky + 4).attr('r', 3.6).style('fill', 'var(--bad)');
-    svg.append('text').attr('x', rx + 12).attr('y', ky + 8).attr('class', 'lbl').text('collapsed');
+    svg.append('circle').attr('cx', kx + kw + 44).attr('cy', ky + 4).attr('r', 3).style('fill', 'var(--bad)');
+    svg.append('text').attr('x', kx + kw + 52).attr('y', ky + 8).attr('class', 'lbl').text('collapsed');
   }
   renders.push(renderGap);
 
@@ -459,7 +468,7 @@
   /* =========================================================
      6. 4x4 grid of training curves (results-page style)
      ========================================================= */
-  const gridState = { metric: 'acc', show: {} };
+  const gridState = { metric: 'acc', show: {}, zoom: null };
   const GRID_METRICS = [['acc', 'Training accuracy'], ['dacc', 'Accuracy vs. SC'], ['fin', 'Finished responses'], ['gap', 'Rollout–trainer gap']];
   const GRID_NOTES = {
     acc: 'Share of correct rollouts at each update, in % (16-update moving average). Below 40% the axis is squeezed into the grey band, so a line that drops into it is a run that collapsed. The dashed grey line, with its value, is the SFT checkpoint itself on the same problems: the mean over the problems of the first 64 updates, with rollouts sampled from the SFT weights.',
@@ -496,7 +505,7 @@
   }
   // hover: crosshair, a dot on every line, tooltip
   function hoverLayer(g, o) {
-    const { x0, top, w, h, n, stride = 2, steps = 304, series, title, extra = '' } = o;
+    const { x0, top, w, h, n, stride = 2, steps = 304, series, title, extra = '', onClick, cursor } = o;
     const hov = g.append('g').style('display', 'none');
     const hl = hov.append('line').attr('y1', top).attr('y2', top + h).style('stroke', 'var(--muted)');
     const dots = series.map(s => hov.append('circle').attr('r', 3.2).style('fill', s.color).style('stroke', 'var(--surface)').style('stroke-width', 1.5));
@@ -515,7 +524,8 @@
           return `<div class="row${v == null ? ' off' : ''}">${s.sw}<span>${s.name}</span><i>${v == null ? (s.missing || 'n/a') : s.fmt(v)}</i></div>`;
         }).join('')}${extra}`, ev);
       })
-      .on('pointerleave', () => { hov.style('display', 'none'); hideTip(); });
+      .on('pointerleave', () => { hov.style('display', 'none'); hideTip(); })
+      .style('cursor', cursor || null).on('click', onClick ? () => { hideTip(); onClick(); } : null);
   }
   function xTicks(g, x0, top, w, h, labels, first = true, last = true) {
     [0, 100, 200, 300].forEach(s => {
@@ -525,43 +535,61 @@
     });
   }
   function renderGrid() {
-    const el = $('#c-grid'), W = Math.max(700, Math.round(el.clientWidth || 700));
+    const el = $('#c-grid'), zoom = gridState.zoom;
+    // zoomed: the single panel fits the screen instead of scrolling sideways
+    el.classList.toggle('fit', !!zoom);
+    const W = Math.max(zoom ? 320 : 700, Math.round(el.clientWidth || 700));
     const metric = gridState.metric, M = MET[metric];
-    const x0 = 64, top0 = 26, gx = 8, gy = 12, pw = Math.floor((W - x0 - 3 * gx - 6) / 4), ph = Math.round(pw * 0.62);
-    const H = top0 + 4 * ph + 3 * gy + 36;
-    const svg = svgIn(el, W, H, `Sixteen small charts of ${metric} over training, one per prefill and trainer setting`);
-    const PX = k => x0 + (k - 1) * (pw + gx), PY = pf => top0 + (pf - 1) * (ph + gy);
-    for (let k = 1; k <= 4; k++) svg.append('text').attr('x', PX(k) + pw / 2).attr('y', 16).attr('text-anchor', 'middle').attr('class', 'ink2').style('font-size', '12px').text(`Trainer passes: ${k}`);
+    const x0 = zoom && W < 560 ? 30 : 64, top0 = 26, gx = 8, gy = 12, pw = Math.floor((W - x0 - 3 * gx - 6) / 4), ph = Math.round(pw * 0.62);
+    const gridH = 4 * ph + 3 * gy;
+    const zw = W - x0 - 6, zh = Math.round(Math.max(240, Math.min(zw * 0.5, 520)));
+    const H = top0 + (zoom ? zh : gridH) + 36;
+    const svg = svgIn(el, W, H, zoom ? `One chart of ${metric} over training for prefill ${zoom[0]} with ${zoom[1]} training passes` : `Sixteen small charts of ${metric} over training, one per prefill and trainer setting`);
     const methods = SYNC_M.filter(m => gridState.show[m] !== false);
-    for (let pf = 1; pf <= 4; pf++) {
-      svg.append('text').attr('transform', `translate(12,${PY(pf) + ph / 2}) rotate(-90)`).attr('text-anchor', 'middle').attr('class', 'ink2').style('font-size', '11.5px').text(`Rollout prefill: ${pf}`);
-      for (let k = 1; k <= 4; k++) {
-        const g = svg.append('g'), px = PX(k), py = PY(pf);
-        panelFrame(g, M, px, py, pw, ph, k === 1);
-        if (metric === 'gap') { const yt = yOf(M, D.band[1], py, ph), yb = yOf(M, D.band[0], py, ph); g.append('rect').attr('x', px + 0.5).attr('y', yt).attr('width', pw - 1).attr('height', yb - yt).style('fill', 'var(--band)'); }
-        xTicks(g, px, py, pw, ph, pf === 4, k === 1, k === 4);
-        const bv = baseOf(metric, pf, k);
-        baseLine(g, M, bv, px, py, pw, ph);
-        const S = {};
-        methods.forEach(m => { S[m] = gridSeries(pf, k, m, metric); });
-        methods.forEach(m => {
-          g.append('path').attr('d', seriesPath(S[m], M, px, py, pw, ph)).style('fill', 'none').style('stroke', mcol(m)).style('stroke-width', 1.7)
-            .style('stroke-linejoin', 'round').style('stroke-linecap', 'round').style('stroke-dasharray', mdash(m));
-        });
-        hoverLayer(g, {
-          x0: px, top: py, w: pw, h: ph, n: 152,
-          series: methods.map(m => ({ name: MN[m], color: mcol(m), sw: swLine(mcol(m), mkind(m)), vals: S[m], fmt: M.fmt, y: v => yOf(M, v, py, ph) })),
-          title: s => `Prefill ${pf} · trainer ${k} · update ${s}`,
-          extra: bv != null ? `<div class="row"><span class="sw dash" style="border-top-color:var(--base)"></span><span>SFT checkpoint</span><i>${M.fmt(bv)}</i></div>` : '',
-        });
-      }
+    function panel(pf, k, px, py, w, h, yTicks, xLabels, first, last, big) {
+      const g = svg.append('g');
+      panelFrame(g, M, px, py, w, h, yTicks);
+      if (metric === 'gap') { const yt = yOf(M, D.band[1], py, h), yb = yOf(M, D.band[0], py, h); g.append('rect').attr('x', px + 0.5).attr('y', yt).attr('width', w - 1).attr('height', yb - yt).style('fill', 'var(--band)'); }
+      xTicks(g, px, py, w, h, xLabels, first, last);
+      const bv = baseOf(metric, pf, k);
+      baseLine(g, M, bv, px, py, w, h);
+      const S = {};
+      methods.forEach(m => { S[m] = gridSeries(pf, k, m, metric); });
+      methods.forEach(m => {
+        g.append('path').attr('d', seriesPath(S[m], M, px, py, w, h)).style('fill', 'none').style('stroke', mcol(m)).style('stroke-width', big ? 2.1 : 1.7)
+          .style('stroke-linejoin', 'round').style('stroke-linecap', 'round').style('stroke-dasharray', mdash(m));
+      });
+      hoverLayer(g, {
+        x0: px, top: py, w, h, n: 152,
+        series: methods.map(m => ({ name: MN[m], color: mcol(m), sw: swLine(mcol(m), mkind(m)), vals: S[m], fmt: M.fmt, y: v => yOf(M, v, py, h) })),
+        title: s => `Prefill ${pf} · trainer ${k} · update ${s}`,
+        extra: bv != null ? `<div class="row"><span class="sw dash" style="border-top-color:var(--base)"></span><span>SFT checkpoint</span><i>${M.fmt(bv)}</i></div>` : '',
+        cursor: big ? 'zoom-out' : 'zoom-in',
+        onClick: () => { gridState.zoom = big ? null : [pf, k]; renderGrid(); },
+      });
     }
-    svg.append('text').attr('x', x0 + 2 * (pw + gx) - gx / 2).attr('y', H - 4).attr('text-anchor', 'middle').attr('class', 'lbl').text('Update');
+    if (zoom) {
+      const [pf, k] = zoom;
+      svg.append('text').attr('x', x0 + zw / 2).attr('y', 16).attr('text-anchor', 'middle').attr('class', 'ink').style('font-size', '12.5px').style('font-weight', 500).text(`Rollout prefill: ${pf} · Training passes: ${k}`);
+      panel(pf, k, x0, top0, zw, zh, true, true, true, true, true);
+      svg.append('text').attr('x', x0 + zw / 2).attr('y', H - 4).attr('text-anchor', 'middle').attr('class', 'lbl').text('Update');
+    } else {
+      const PX = k => x0 + (k - 1) * (pw + gx), PY = pf => top0 + (pf - 1) * (ph + gy);
+      for (let k = 1; k <= 4; k++) svg.append('text').attr('x', PX(k) + pw / 2).attr('y', 16).attr('text-anchor', 'middle').attr('class', 'ink2').style('font-size', '12px').text(`Training passes: ${k}`);
+      for (let pf = 1; pf <= 4; pf++) {
+        svg.append('text').attr('transform', `translate(12,${PY(pf) + ph / 2}) rotate(-90)`).attr('text-anchor', 'middle').attr('class', 'ink2').style('font-size', '11.5px').text(`Rollout prefill: ${pf}`);
+        for (let k = 1; k <= 4; k++) panel(pf, k, PX(k), PY(pf), pw, ph, k === 1, pf === 4, k === 1, k === 4, false);
+      }
+      svg.append('text').attr('x', x0 + 2 * (pw + gx) - gx / 2).attr('y', H - 4).attr('text-anchor', 'middle').attr('class', 'lbl').text('Update');
+    }
+    $('#grid-back').hidden = !zoom;
     $('#grid-note').textContent = GRID_NOTES[metric];
   }
   function bindGrid() {
     seg($('#grid-metric'), GRID_METRICS, gridState.metric, v => { gridState.metric = v; renderGrid(); });
     chips($('#grid-methods'), SYNC_M.map(m => [m, MN[m], mcol(m), mkind(m)]), gridState.show, renderGrid);
+    $('#grid-back').addEventListener('click', () => { gridState.zoom = null; renderGrid(); });
+    document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && gridState.zoom) { gridState.zoom = null; renderGrid(); } });
   }
   renders.push(renderGrid);
 
@@ -633,7 +661,7 @@
       // one grid per method
       SYNC_M.forEach((m, mi) => {
         const ox = gx0 + mi * stride;
-        head(ox, b0, MN[m], 'Trainer passes', ox + 2 * (cw + cg), mcol(m), mdash(m));
+        head(ox, b0, MN[m], 'Training passes', ox + 2 * (cw + cg), mcol(m), mdash(m));
         for (let k = 1; k <= 4; k++) svg.append('text').attr('x', ox + (k - 1) * (cw + cg) + cw / 2).attr('y', b0 + 66).attr('text-anchor', 'middle').attr('class', 'lbl').text(k);
         for (let r = 1; r <= 4; r++) for (let k = 1; k <= 4; k++)
           cell(ox + (k - 1) * (cw + cg), cy(b0, r), cw, runs[`${r}${k}${m}`], b, starts[r][b], `${MN[m]} · prefill ${r} · trainer ${k}`, bench);

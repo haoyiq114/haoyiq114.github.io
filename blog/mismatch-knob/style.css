@@ -123,6 +123,7 @@ figcaption::before { content: "Figure " counter(fig) ": "; font-weight: 600; col
 .chart svg { display: block; width: 100%; height: auto; overflow: visible; font-family: var(--sans); }
 .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .scroll > .chart { min-width: 600px; }
+.scroll > .chart.fit { min-width: 0; }
 
 .controls { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin: 0 0 12px; font-family: var(--sans); font-size: 13px; }
 .controls .group-label { color: var(--muted); margin-right: 8px; }
@@ -131,6 +132,9 @@ figcaption::before { content: "Figure " counter(fig) ": "; font-weight: 600; col
 .seg button:hover { color: var(--ink); }
 .seg button[aria-pressed="true"] { background: var(--panel); color: var(--ink); font-weight: 500; }
 .seg button:focus-visible, .chip:focus-visible { outline: 2px solid var(--ctl); outline-offset: 1px; }
+.zoom-back { font: inherit; color: var(--ink); background: var(--panel); border: 0; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.zoom-back:hover { color: var(--link); }
+.zoom-back:focus-visible { outline: 2px solid var(--ctl); outline-offset: 1px; }
 .chips { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--sans); font-size: 13px; }
 .chip { font: inherit; display: inline-flex; align-items: center; gap: 6px; color: var(--ink); background: none; border: 0; padding: 2px 0; cursor: pointer; }
 .chip[aria-pressed="false"] { color: var(--muted); text-decoration: line-through; }
@@ -200,7 +204,7 @@ footer a { color: var(--ink2); }
 @media (max-width: 600px) { body { font-size: 16px; } h2 { font-size: 21px; } }
 
 /* Figure 4 is a small table-like heatmap: draw it at its own size, centred */
-#fig-gap .scroll > .chart { min-width: 0; max-width: 410px; margin: 0 auto; }
+#fig-gap .scroll > .chart { min-width: 560px; max-width: 660px; margin: 0 auto; }
 
 /* Figures 6 and 7: the chart is wider than the text and centred; title, controls and caption stay on the text column */
 figure.xwide { max-width: min(960px, calc(100% - 32px)); }
