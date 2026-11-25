@@ -124,7 +124,7 @@
 <p><strong>How this differs from a looped transformer.</strong> A looped transformer such as <a href="https://thinkingmachines.ai/news/inkling-2-mini/">Inkling 2 Mini</a> recurs in depth: it runs its middle layers three times on the same token before emitting it. That costs more compute per token at inference, but training unrolls exactly the same loops, so rollouts and training compute the same function, up to the usual numerical noise. A recurrent transformer recurs across tokens instead. Ours pays for its extra passes only in training, and trains on an approximation of what it runs at inference. That approximation is the knob.</p>
 
 <h2 id="measure">Measuring the mismatch</h2>
-<p><strong>On every training batch we log the gap, the mean absolute difference between the trainer's and the rollout's log-probability of each response token.</strong> A gap of 0.01 means the two are on average about 1% apart in the probability they give a token. We average it over the first 20 updates, long before any run collapses. Across the 16 settings it runs from 0.004 to 0.073. Runs with a correction start within about 12% of these values, so the early gap is a property of the setting, not of the loss: the figure below shows the same gaps under SC, a correction introduced in the next section.</p>
+<p><strong>On every training batch we log the gap, the mean absolute difference between the trainer's and the rollout's log-probability of each response token.</strong> A gap of 0.01 means the two are on average about 1% apart in the probability they give a token. We average it over the first 20 updates, long before any run collapses. Across the 16 settings it runs from 0.004 to 0.073. Runs with a correction start within about 12% of these values, so the early gap is a property of the setting, not of the loss: the figure below shows the same gaps under score centering (SC), a correction to the loss described in the next section.</p>
 </article>
 
 <figure class="wide" id="fig-gap">
@@ -140,6 +140,7 @@
   <li><strong>For a given trainer, the gap is smallest when the prefill uses the same number of passes.</strong> This holds in all four columns. More prefill passes than training passes do not help: with a 2-pass trainer the gap rises from 0.019 at prefill 2 to 0.023 at prefill 4.</li>
   <li><strong>A one-pass prefill keeps the gap at 0.036 or more, however many passes the trainer runs.</strong> The rollout read the prompt without memory, and no number of training passes reproduces that.</li>
   <li><strong>Replay almost closes the gap.</strong> Feeding the trainer the recurrent states the rollout actually produced, the fix proposed in the LRT paper, gives 0.003 in every row. We attribute what remains to numerical differences between the two code paths.</li>
+  <li><strong>Score centering leaves the gap where it is.</strong> With SC, the 16 early gaps are within 8% of the uncorrected ones (0.007 in the standard setting either way), and over the last 20 updates of the epoch they are still at 1.0–1.9 times their starting values. Yet none of the 16 SC runs collapsed, so SC does not work by shrinking the gap.</li>
 </ul>
 <p>The six settings at 0.010 or below, two or more prefill passes with three or more training passes, are the ones where uncorrected GRPO trains. The standard setting, prefill 3 with a 3-pass trainer, sits at 0.007.</p>
 
