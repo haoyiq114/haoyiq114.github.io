@@ -174,6 +174,10 @@ table.losses td:last-child { font-size: 15px; overflow-x: auto; }
 .katex { font-size: 1.06em; }
 .eq { margin: 2px 0 6px; overflow-x: auto; overflow-y: hidden; }
 .eq .katex-display { margin: .7em 0; }
+/* the one symbol that differs between the wanted and the computed gradient: q blue and p black, as in the figure below; red is kept for the mismatch */
+.katex .tq, .katex .tp { font-weight: 700; padding: 0 2px; border-radius: 3px; background: color-mix(in srgb, currentColor 14%, transparent); }
+.katex .tq { color: var(--accent); }
+.katex .tp { color: var(--ink); }
 .note { font-size: 14.5px; color: var(--ink2); }
 
 details { font-family: var(--sans); font-size: 14px; margin: 18px auto; }

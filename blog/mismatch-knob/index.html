@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<link rel="stylesheet" href="style.css?v=20261126b">
+<link rel="stylesheet" href="style.css?v=20261126e">
 </head>
 <body>
 <div class="topbar">
@@ -126,17 +126,27 @@
 <p><strong>How this differs from a looped transformer.</strong> A looped transformer such as <a href="https://thinkingmachines.ai/news/inkling-2-mini/">Inkling 2 Mini</a> recurs in depth: it runs its middle layers three times on the same token before emitting it. That costs more compute per token at inference, but training unrolls exactly the same loops, so rollouts and training compute the same function, up to the usual numerical noise. A recurrent transformer recurs across tokens instead. Ours pays for its extra passes only in training, and trains on an approximation of what it runs at inference. That approximation is the knob.</p>
 
 <h2 id="theory">What the mismatch should do to RL</h2>
-<p><strong>Before the measurements, here is what existing theory says to expect.</strong> Nothing in this section is new: the decomposition comes from the <a href="https://arxiv.org/abs/2609.20807">score-centering paper</a>, and applying it to a recurrent transformer follows an <a href="https://zefancai.com/en/blog/lastkv-rl/">earlier note</a> by one of us. It gives three predictions, and the rest of the post checks them.</p>
-<p><strong>Two policies share one set of weights.</strong> Call <em>q</em> the policy that generated a rollout (<em>P</em> prefill passes, then the exact recurrence) and <em>p</em> the policy the trainer recomputes on the recorded tokens (<em>K</em> parallel passes). RL wants the gradient of the rollout policy's expected reward <em>R</em>. The trainer differentiates through <em>p</em> instead:</p>
-<p class="eq"><span class="math" data-tex="\begin{aligned} \text{wanted}\quad & \mathbb{E}_{\tau\sim q}\big[R(\tau)\,\nabla_\theta\log q(\tau)\big] \\ \text{computed}\quad & \mathbb{E}_{\tau\sim q}\big[R(\tau)\,\nabla_\theta\log p(\tau)\big] \end{aligned}"></span></p>
-<p>The samples come from one policy and the gradient passes through the other. In a standard transformer the two are the same computation run in a different order, so they agree up to numerical noise. Here they agree only as far as the trainer's passes reproduce the recurrence: the trainer rereads the prompt with its own <em>K</em> passes, and its memory of the response reaches <em>K</em> − 1 positions back.</p>
-<p><strong>The mismatch adds a term that ignores which token was better.</strong> Fix a prefix and write <span data-tex="g(y) = \nabla_\theta \log p(y)"></span> for the score of the next token. Averaged over <em>p</em>, the score is zero, because probabilities sum to one. Averaged over <em>q</em>, it is not, and the update at that prefix splits in two:</p>
+<p><strong>Before the measurements, here is what existing theory says to expect.</strong> Nothing here is new: the decomposition is from the <a href="https://arxiv.org/abs/2609.20807">score-centering paper</a>, and its application to a recurrent transformer follows an <a href="https://zefancai.com/en/blog/lastkv-rl/">earlier note</a> by one of us.</p>
+<p><strong>RL assumes one policy; in practice there can be two.</strong> Call <em>q</em> the policy that <em>sampled</em> the rollouts and <em>p</em> the policy the <em>trainer</em> differentiates. RL wants the gradient of the expected reward <em>R</em> under <em>q</em>. When the two differ, the trainer computes something else:</p>
+<p class="eq"><span class="math" data-tex="\begin{aligned} \text{wanted}\quad & \mathbb{E}_{\tau\sim q}\big[R(\tau)\,\nabla_\theta\log \htmlClass{tq}{q}(\tau)\big] \\ \text{computed}\quad & \mathbb{E}_{\tau\sim q}\big[R(\tau)\,\nabla_\theta\log \htmlClass{tp}{p}(\tau)\big] \end{aligned}"></span></p>
+<p><strong>A check with equal rewards shows what goes wrong.</strong> Suppose every rollout earns the same positive reward. Nothing separates a better response from a worse one, so the weights should not move, and when <em>q</em> = <em>p</em> they do not, on average. When the two differ they do. At one prefix, write <span data-tex="g(y) = \nabla_\theta \log p(y)"></span> for the score of the next token. Its average over <em>p</em> is zero, because probabilities sum to one. Its average over <em>q</em> is not, and the update splits in two:</p>
 <p class="eq"><span class="math" data-tex="\mathbb{E}_q[R\,g] \;=\; \underbrace{\mathbb{E}_q[R]\;\mathbb{E}_q[g]}_{\text{drift}} \;+\; \underbrace{\mathrm{Cov}_q(R,\,g)}_{\text{reward signal}}"></span></p>
-<p>The drift term depends on the reward only through its mean. It moves the weights by an amount set by the mismatch, the new weights produce the next rollouts, and the same term appears again, so it accumulates over updates. GRPO's advantage does not cancel it: subtracting the group's mean reward makes the advantages sum to zero over a problem's rollouts, not at each prefix.</p>
-<p><strong>Score centering removes that term and nothing else.</strong> SC replaces <span data-tex="g"></span> with <span data-tex="g - \mathbb{E}_q[g]"></span>, which deletes the drift term and keeps the covariance. It does not change how <em>p</em> or <em>q</em> is computed, so the two policies stay as far apart as before. What remains is a covariance under <em>q</em>, which is still not the exact gradient under <em>p</em>. Replay works from the other side: it hands the trainer the rollout's recurrent states, so <em>p</em> matches <em>q</em> in the forward pass, though the states enter as constants and no gradient flows through them.</p>
+<p>With equal rewards the covariance vanishes and only the drift is left. It says nothing about which token was better, and because the updated weights produce the next rollouts, it accumulates from one update to the next. GRPO's baseline removes it in the equal-reward case but not in general: subtracting a problem's mean reward makes the advantages sum to zero over that problem's rollouts, not at each prefix.</p>
+<p><strong>Score centering removes the drift and nothing else.</strong> SC replaces <span data-tex="g"></span> with <span data-tex="g - \mathbb{E}_q[g]"></span>, which deletes the drift term and keeps the covariance. It does not change how <em>p</em> or <em>q</em> is computed, so the two stay as far apart as before.</p>
+<p><strong>In a recurrent transformer the mismatch is part of the model.</strong> A standard transformer computes <em>q</em> and <em>p</em> the same way in a different order. Ours does not: <em>q</em> runs the exact recurrence, and <em>p</em> approximates it with <em>K</em> parallel passes. Replay is the fix on that side: it hands the trainer the rollout's recurrent states, so <em>p</em> matches <em>q</em> in the forward pass.</p>
+</article>
+
+<figure class="wide" id="fig-loop">
+  <p class="fig-title">Score centering removes the drift; replay removes the gap</p>
+  <p class="fig-sub">Top: the next-token distributions at one prefix, <em>q</em> from the rollout and <em>p</em> from the trainer, colored as in the formula above. Bottom: the update the trainer makes there. Red marks the mismatch and what it adds to the update.</p>
+  <div class="chart" id="c-loop"></div>
+  <figcaption>A schematic, not data: the shapes and lengths are illustrative.</figcaption>
+</figure>
+
+<article class="col">
 <p>That gives three things to look for:</p>
 <ol>
-  <li><strong>A gap before any update.</strong> At identical weights, <em>p</em> and <em>q</em> should already give different probabilities to the same token, by an amount that shrinks as <em>K</em> grows and is smallest when <em>P</em> = <em>K</em> (<a href="#measure">Measuring the mismatch</a>).</li>
+  <li><strong>A gap before any update.</strong> At identical weights, <em>p</em> and <em>q</em> should already give different probabilities to the same token, by an amount that shrinks as <em>K</em> grows (<a href="#measure">Measuring the mismatch</a>).</li>
   <li><strong>Uncorrected GRPO breaks where the gap is large.</strong> The theory does not say how large is too large; the runs put the line between 0.011 and 0.019 (<a href="#sync">Sync RL</a>).</li>
   <li><strong>SC stabilizes training without closing the gap</strong>, and the same should hold when stale weights add to the mismatch (<a href="#sync">Sync RL</a>, <a href="#async">Async RL</a>).</li>
 </ol>
@@ -195,7 +205,7 @@
 </table>
 <p class="note">sg is stop-gradient and the sums run over the whole vocabulary; <span data-tex="w(v) = \min\big(p(v)/q(v),\,C\big)"></span>, with <em>C</em> = 2 and β = 0.01. The KL term of SC+KL is estimated on the sampled token, as <span data-tex="\beta\,\big(\log q(y) - \log p(y)\big)"></span>.</p>
 <ul class="corrections">
-    <li><strong>SC</strong> (<a href="https://arxiv.org/abs/2609.20807">score centering</a>) makes each token's score average to zero under the rollout's own distribution. The uncorrected score does that only when <em>q</em> = <em>p</em>; otherwise the mismatch adds a bias that accumulates step after step, which the paper calls drift.</li>
+    <li><strong>SC</strong> (<a href="https://arxiv.org/abs/2609.20807">score centering</a>) subtracts the <a href="#theory">drift term</a>: it makes each token's score average to zero under the rollout's own distribution.</li>
     <li><strong>TIS</strong> (<a href="https://fengyao.notion.site/off-policy-rl">truncated importance sampling</a>) reweights each token toward the trainer's distribution and caps the weight, trading some bias for bounded variance.</li>
     <li><strong>SC+TIS</strong> applies both: the capped importance weight on the sampled token, and the centering term with the same weights.</li>
     <li><strong>SC+KL</strong> also pulls <em>p</em> toward <em>q</em>, our simplified reading of Tinker's <a href="https://tinker-docs.thinkingmachines.ai/tinker/losses/stable-reinforce/">StableReinforce</a> loss.</li>
@@ -362,6 +372,6 @@
 <div class="tip" id="tip" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script src="main.js?v=20261126b"></script>
+<script src="main.js?v=20261126e"></script>
 </body>
 </html>

@@ -34,7 +34,7 @@
 
   /* ---------- math ---------- */
   document.querySelectorAll('[data-tex]').forEach(el => {
-    try { katex.render(el.dataset.tex, el, { displayMode: el.classList.contains('math'), throwOnError: false }); } catch (e) { el.textContent = el.dataset.tex; }
+    try { katex.render(el.dataset.tex, el, { displayMode: el.classList.contains('math'), throwOnError: false, strict: false, trust: c => c.command === '\\htmlClass' }); } catch (e) { el.textContent = el.dataset.tex; }
   });
 
   /* ---------- side contents: highlight the section in view ---------- */
@@ -248,6 +248,71 @@
     });
   }
   renders.push(renderArch);
+
+  /* =========================================================
+     2b. Theory: gap and drift under no correction, score centering and replay.
+         Three schematic panels (no data); red marks the gap and the drift it adds.
+     ========================================================= */
+  function renderLoop() {
+    const el = $('#c-loop'); if (!el) return;
+    const W = Math.max(300, Math.round(el.clientWidth || 680)), wide = W >= 600;
+    const gap = 24, pw = wide ? Math.floor((W - 2 * gap) / 3) : W, PH = 244;
+    const H = wide ? PH : 3 * PH + 2 * 22;
+    const svg = svgIn(el, W, H, 'Three schematic panels. No correction: the rollout distribution q and the trainer distribution p are apart, and the update is the reward signal plus a drift. Score centering: q and p are just as far apart, the drift is subtracted and the update is the reward signal alone. Replay: p coincides with q, no drift arises and the update is the reward signal.');
+    const mk = markers(svg, 'loop', [['i', 'var(--ink)'], ['g', 'var(--ink2)'], ['r', 'var(--bad)']]);
+    const it = c => `<tspan font-style="italic">${c}</tspan>`;
+    const panels = [
+      ['No correction', 'The gap adds a drift to the update', 'none'],
+      ['Score centering', 'Drift subtracted, gap unchanged', 'sc'],
+      ['Replay', 'Gap closed, so no drift arises', 'replay'],
+    ];
+    const yb = 130, ph = 58, sig = Math.min(26, pw * 0.11), off = sig * 1.6, yg = yb - ph - 12;
+    const bump = mu => d3.range(3, pw - 2, 2).map(x => [x, yb - ph * Math.exp(-((x - mu) ** 2) / (2 * sig * sig))]);
+    const lineOf = pts => 'M' + pts.map(([x, y]) => `${x},${y.toFixed(1)}`).join(' L');
+    // the update lives in the same dashed frame in every panel
+    const fw = Math.min(130, pw - 110), fh = 56, ox = wide ? 58 : Math.round((pw - fw) / 2), oy = 216, sx = ox + fw;
+    panels.forEach(([title, desc, kind], pi) => {
+      const g = svg.append('g').attr('transform', wide ? `translate(${pi * (pw + gap)},0)` : `translate(0,${pi * (PH + 22)})`);
+      const t = (x, y, s, cls = 'ink2', anchor = 'start', size = 11.5) => g.append('text').attr('x', x).attr('y', y).attr('text-anchor', anchor).attr('class', cls).style('font-size', size + 'px').html(s);
+      t(0, 13, title, 'ink', 'start', 12.5).style('font-weight', 600);
+      t(0, 29, desc);
+
+      // top: the two next-token distributions at one prefix
+      const apart = kind !== 'replay', mq = apart ? (pw - off) / 2 : pw / 2, mp = apart ? mq + off : mq;
+      const q = bump(mq);
+      g.append('path').attr('d', `${lineOf(q)} L${pw - 3},${yb} L3,${yb} Z`).style('fill', 'color-mix(in srgb, var(--accent) 14%, var(--bg))');
+      g.append('path').attr('d', lineOf(q)).style('fill', 'none').style('stroke', 'var(--accent)').style('stroke-width', 1.6);
+      g.append('path').attr('d', lineOf(bump(mp))).style('fill', 'none').style('stroke', 'var(--ink)').style('stroke-width', 1.9).style('stroke-dasharray', apart ? null : '5 4');
+      g.append('line').attr('x1', 0).attr('x2', pw).attr('y1', yb).attr('y2', yb).style('stroke', 'var(--axis)');
+      const full = pi === 0, ly = yb - ph * 0.55;
+      t(mq - sig * 1.55, ly, full ? `rollout ${it('q')}` : it('q'), 'ink2', 'end');
+      t(mp + sig * 1.55, ly, full ? `trainer ${it('p')}` : it('p'), 'ink');
+      if (apart) {
+        g.append('path').attr('d', `M${mq},${yg - 4} V${yg + 4} M${mq},${yg} H${mp} M${mp},${yg - 4} V${yg + 4}`).style('fill', 'none').style('stroke', 'var(--bad)').style('stroke-width', 1.8);
+        t((mq + mp) / 2, yg - 7, 'gap', 'ink', 'middle');
+      } else {
+        t(mq, yg - 7, `${it('p')} = ${it('q')}`, 'ink', 'middle');
+      }
+
+      // bottom: the update at that prefix, as reward signal plus drift
+      g.append('rect').attr('x', ox).attr('y', oy - fh).attr('width', fw).attr('height', fh).style('fill', 'none').style('stroke', 'var(--axis)').style('stroke-dasharray', '2 3');
+      g.append('path').attr('d', `M${ox},${oy} H${sx - 1}`).style('fill', 'none').style('stroke', 'var(--ink2)').style('stroke-width', 1.4).attr('marker-end', mk('g'));
+      t((ox + sx) / 2, oy + 17, 'reward signal', 'ink2', 'middle');
+      const cy = oy - fh / 2;
+      if (kind !== 'replay') {
+        const cut = kind === 'sc';
+        g.append('path').attr('d', `M${ox},${oy} V${oy - fh + 1}`).style('fill', 'none').style('stroke', 'var(--bad)').style('stroke-width', 2).attr('marker-end', mk('r'))
+          .style('opacity', cut ? 0.5 : 1).style('stroke-dasharray', cut ? '3 3' : null);
+        if (cut) { const r = 4.5; g.append('path').attr('d', `M${ox - r},${cy - r} L${ox + r},${cy + r} M${ox - r},${cy + r} L${ox + r},${cy - r}`).style('stroke', 'var(--ink)').style('stroke-width', 2).style('stroke-linecap', 'round'); }
+      }
+      t(ox - 11, cy + 4, kind === 'replay' ? 'no drift' : 'drift', kind === 'none' ? 'ink' : 'ink2', 'end');
+      const ty = kind === 'none' ? oy - fh : oy;
+      g.append('path').attr('d', `M${ox},${oy} L${sx - 1.5},${ty + (oy - ty) * 0.02}`).style('fill', 'none').style('stroke', 'var(--ink)').style('stroke-width', 2.4).style('stroke-linecap', 'round').attr('marker-end', mk('i'));
+      g.append('circle').attr('cx', ox).attr('cy', oy).attr('r', 2.6).style('fill', 'var(--ink)');
+      t(sx + 7, ty + 4, 'update', 'ink').style('font-weight', 600);
+    });
+  }
+  renders.push(renderLoop);
 
   /* =========================================================
      3. Refinement: K training passes vs P prefill passes + decoding
