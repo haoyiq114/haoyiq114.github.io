@@ -753,46 +753,58 @@
   /* =========================================================
      9. Async training curves: one panel per method, one line per lag
      ========================================================= */
-  const asState = { pf: 3, metric: 'acc', show: {} };
+  const asState = { pf: 3, metric: 'acc', show: {}, zoom: null };
   const AS_NOTES = {
     acc: 'Share of correct rollouts at each update, in % (16-update moving average); below 40% the axis is squeezed into the grey band. The dashed grey line is the SFT checkpoint itself: the mean over the first 64 updates of the runs refreshed every 64, whose rollouts all come from the SFT weights.',
     fin: 'Share of rollouts that finish within 768 tokens, in %; below 90% the axis is squeezed into the grey band. The dashed grey line is the SFT checkpoint itself, measured the same way.',
     gap: 'Per-token gap (log scale): stale weights add to the gap the pass counts already set. The red band is 0.011–0.019.',
   };
   function renderAsync() {
-    const el = $('#c-async'), W = Math.max(700, Math.round(el.clientWidth || 700));
+    const el = $('#c-async'), zoom = asState.zoom;
+    // zoomed: the single panel fits the screen instead of scrolling sideways
+    el.classList.toggle('fit', !!zoom);
+    const W = Math.max(zoom ? 320 : 700, Math.round(el.clientWidth || 700));
     const { pf, metric } = asState, M = MET[metric];
-    const x0 = 34, gx = 8, top = 26, pw = Math.floor((W - x0 - 4 * gx - 6) / 5), ph = Math.round(Math.min(170, pw * 0.85)), H = top + ph + 34;
-    const svg = svgIn(el, W, H, `Five small charts of ${metric} for each method, one line per refresh interval`);
+    const x0 = 34, gx = 8, top = 26, pw = Math.floor((W - x0 - 4 * gx - 6) / 5), ph = Math.round(Math.min(170, pw * 0.85));
+    const zw = W - x0 - 6, zh = Math.round(Math.max(240, Math.min(zw * 0.5, 520)));
+    const H = top + (zoom ? zh : ph) + 34;
+    const svg = svgIn(el, W, H, zoom ? `One chart of ${metric} for ${MN[zoom]}, one line per refresh interval` : `Five small charts of ${metric} for each method, one line per refresh interval`);
     const lags = LAGS.filter(l => asState.show[l] !== false);
     const bv = baseOf(metric, pf, 3);
-    ASYNC_M.forEach((m, mi) => {
-      const g = svg.append('g'), px = x0 + mi * (pw + gx);
+    function panel(m, px, w, h, yTicks, first, last, big) {
+      const g = svg.append('g');
       g.append('line').attr('x1', px + 2).attr('x2', px + 20).attr('y1', 11).attr('y2', 11).style('stroke', mcol(m)).style('stroke-width', 2.2).style('stroke-dasharray', mdash(m)).style('stroke-linecap', 'round');
-      g.append('text').attr('x', px + 26).attr('y', 15).attr('class', 'ink').style('font-size', '12px').style('font-weight', 500).text(MN[m]);
-      panelFrame(g, M, px, top, pw, ph, mi === 0);
-      if (metric === 'gap') { const yt = yOf(M, D.band[1], top, ph), yb = yOf(M, D.band[0], top, ph); g.append('rect').attr('x', px + 0.5).attr('y', yt).attr('width', pw - 1).attr('height', yb - yt).style('fill', 'var(--band)'); }
-      xTicks(g, px, top, pw, ph, true, mi === 0, mi === ASYNC_M.length - 1);
-      baseLine(g, M, bv, px, top, pw, ph);
+      g.append('text').attr('x', px + 26).attr('y', 15).attr('class', 'ink').style('font-size', big ? '12.5px' : '12px').style('font-weight', 500).text(MN[m]);
+      panelFrame(g, M, px, top, w, h, yTicks);
+      if (metric === 'gap') { const yt = yOf(M, D.band[1], top, h), yb = yOf(M, D.band[0], top, h); g.append('rect').attr('x', px + 0.5).attr('y', yt).attr('width', w - 1).attr('height', yb - yt).style('fill', 'var(--band)'); }
+      xTicks(g, px, top, w, h, true, first, last);
+      baseLine(g, M, bv, px, top, w, h);
       const S = {};
       lags.forEach(l => { const r = D.async[`${pf}-${m}-${l}`]; S[l] = r ? (metric === 'gap' ? smooth(r.gap, 8) : smooth(pct(r[metric]), 8)) : null; });
       lags.forEach(l => {
         if (!S[l]) return;
-        g.append('path').attr('d', seriesPath(S[l], M, px, top, pw, ph)).style('fill', 'none').style('stroke', `var(--lag${l})`).style('stroke-width', 1.7).style('stroke-linejoin', 'round');
+        g.append('path').attr('d', seriesPath(S[l], M, px, top, w, h)).style('fill', 'none').style('stroke', `var(--lag${l})`).style('stroke-width', big ? 2.1 : 1.7).style('stroke-linejoin', 'round');
       });
       hoverLayer(g, {
-        x0: px, top, w: pw, h: ph, n: 152,
-        series: lags.map(l => ({ name: LAGN(l), color: `var(--lag${l})`, sw: swLine(`var(--lag${l})`), vals: S[l], fmt: M.fmt, y: v => yOf(M, v, top, ph) })),
+        x0: px, top, w, h, n: 152,
+        series: lags.map(l => ({ name: LAGN(l), color: `var(--lag${l})`, sw: swLine(`var(--lag${l})`), vals: S[l], fmt: M.fmt, y: v => yOf(M, v, top, h) })),
         title: s => `${MN[m]} · update ${s}`,
+        cursor: big ? 'zoom-out' : 'zoom-in',
+        onClick: () => { asState.zoom = big ? null : m; renderAsync(); },
       });
-    });
-    svg.append('text').attr('x', x0 + 2.5 * (pw + gx)).attr('y', H - 4).attr('text-anchor', 'middle').attr('class', 'lbl').text('Update');
+    }
+    if (zoom) panel(zoom, x0, zw, zh, true, true, true, true);
+    else ASYNC_M.forEach((m, mi) => panel(m, x0 + mi * (pw + gx), pw, ph, mi === 0, mi === 0, mi === ASYNC_M.length - 1, false));
+    svg.append('text').attr('x', zoom ? x0 + zw / 2 : x0 + 2.5 * (pw + gx)).attr('y', H - 4).attr('text-anchor', 'middle').attr('class', 'lbl').text('Update');
+    $('#as-back').hidden = !zoom;
     $('#as-note').textContent = AS_NOTES[metric];
   }
   function bindAsync() {
     seg($('#as-setting'), [['3', 'Standard (prefill 3)'], ['1', 'Stress (prefill 1)']], '3', v => { asState.pf = +v; renderAsync(); });
     seg($('#as-metric'), [['acc', 'Training accuracy'], ['fin', 'Finished responses'], ['gap', 'Rollout–trainer gap']], 'acc', v => { asState.metric = v; renderAsync(); });
     chips($('#as-legend'), LAGS.map(l => [l, l === 0 ? 'Synchronous' : `Refresh every ${l}`, `var(--lag${l})`, null]), asState.show, renderAsync);
+    $('#as-back').addEventListener('click', () => { asState.zoom = null; renderAsync(); });
+    document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && asState.zoom) { asState.zoom = null; renderAsync(); } });
   }
   renders.push(renderAsync);
 

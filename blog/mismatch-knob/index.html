@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<link rel="stylesheet" href="style.css?v=20261124g">
+<link rel="stylesheet" href="style.css?v=20261126a">
 </head>
 <body>
 <div class="topbar">
@@ -235,13 +235,14 @@
 
 <figure class="wide xwide" id="fig-async">
   <p class="fig-title">How a stale run falls apart</p>
-  <p class="fig-sub">One panel per method; each line is one refresh interval, and clicking an interval hides or shows it. Rollout accuracy is measured on the stale rollout weights, so it moves in steps at each refresh.</p>
+  <p class="fig-sub">One panel per method; each line is one refresh interval. Click an interval to hide or show it, and click a panel to enlarge it. Rollout accuracy is measured on the stale rollout weights, so it moves in steps at each refresh.</p>
   <div class="controls">
     <div><span class="group-label">Setting</span><div class="seg" id="as-setting" role="group" aria-label="Setting"></div></div>
     <div><span class="group-label">Metric</span><div class="seg" id="as-metric" role="group" aria-label="Metric"></div></div>
   </div>
   <div class="controls">
     <span class="group-label">Refresh interval</span><div class="chips" id="as-legend" role="group" aria-label="Refresh interval"></div>
+    <button class="zoom-back" id="as-back" type="button" hidden>← All 5 methods</button>
   </div>
   <div class="scroll"><div class="chart" id="c-async"></div></div>
   <figcaption id="as-note"></figcaption>
@@ -327,6 +328,6 @@
 <div class="tip" id="tip" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script src="main.js?v=20261124g"></script>
+<script src="main.js?v=20261126a"></script>
 </body>
 </html>
