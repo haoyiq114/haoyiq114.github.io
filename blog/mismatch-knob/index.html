@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<link rel="stylesheet" href="style.css?v=20261126a">
+<link rel="stylesheet" href="style.css?v=20261126b">
 </head>
 <body>
 <div class="topbar">
@@ -42,6 +42,7 @@
   <ol>
     <li><a href="#intro">A model that disagrees with itself</a></li>
     <li><a href="#lrt">How a recurrent transformer trains and how it generates</a></li>
+    <li><a href="#theory">What the mismatch should do to RL</a></li>
     <li><a href="#measure">Measuring the mismatch</a></li>
     <li><a href="#sync">Sync RL</a></li>
     <li><a href="#async">Async RL</a></li>
@@ -63,6 +64,7 @@
   <ol>
     <li><a href="#intro">A model that disagrees with itself</a></li>
     <li><a href="#lrt">How a recurrent transformer trains and how it generates</a></li>
+    <li><a href="#theory">What the mismatch should do to RL</a></li>
     <li><a href="#measure">Measuring the mismatch</a></li>
     <li><a href="#sync">Sync RL: which settings collapse, and what fixes them</a></li>
     <li><a href="#async">Async RL: how much staleness each method survives</a></li>
@@ -76,7 +78,7 @@
 <h2 id="intro">A model that disagrees with itself</h2>
 <p><strong>Recurrence is back in transformers.</strong> Looped transformers such as <a href="https://thinkingmachines.ai/news/inkling-2-mini/">Inkling 2 Mini</a> and <a href="https://z.ai/blog/glm-5.4">GLM-5.4</a> run some layers several times per token. Recurrent transformers (<a href="https://arxiv.org/abs/2605.26797">LRT</a>, <a href="https://arxiv.org/abs/2607.15178">T<sup>2</sup>MLR</a>, the <a href="https://arxiv.org/abs/2608.08888">full-bandwidth transformer</a>, <a href="https://arxiv.org/abs/2609.38149">LIFT</a> and other <a href="https://arxiv.org/abs/2611.20404">latent feedback transformers</a>) recur across tokens instead: each token passes a latent state to the next. <em>Most of the attention so far has gone to architecture and pretraining; RL post-training has barely been touched.</em> This post takes one recurrent transformer, a model built on the <strong>Latent Recurrent Transformer (LRT)</strong> design, and asks a plain question: what happens when you post-train it with the RL methods people already use?</p>
 <p>We did not design a new algorithm. We ran GRPO as it is, alone and with the published corrections for a mismatch between rollout and trainer (truncated importance sampling, score centering, and combinations built on them), both with fresh rollout weights and with stale ones, as in asynchronous training.</p>
-<p>One property of our recurrent transformer makes this more than a routine check. It trains with a few parallel refinement passes over the whole sequence, but generates text recurrently, one token at a time. RL post-training assumes that the policy that generates the rollouts and the policy the trainer updates are identical. In a standard transformer they differ only slightly, through numerical differences between inference and training code or through stale weights in asynchronous pipelines. In our recurrent transformer the difference is built in, and its size depends on two numbers we choose: how many passes the rollout spends reading the prompt, and how many passes the trainer uses to score the response. The LRT paper notes this mismatch itself (§4.6) and reduces it by starting the trainer from the rollout's cached states, and two earlier notes by one of us work through what it means for the policy gradient (<a href="https://zefancai.com/en/blog/lastkv-rl/">policy consistency</a>, <a href="https://zefancai.com/en/blog/ar-drift/">drift</a>). Here we measure it. Across our settings, the per-token log-probability gap between rollout and trainer runs from 0.004 to 0.073.</p>
+<p>One property of our recurrent transformer makes this more than a routine check. It trains with a few parallel refinement passes over the whole sequence, but generates text recurrently, one token at a time. RL post-training assumes that the policy that generates the rollouts and the policy the trainer updates are identical. In a standard transformer they differ only slightly, through numerical differences between inference and training code or through stale weights in asynchronous pipelines. In our recurrent transformer the difference is built in, and its size depends on two numbers we choose: how many passes the rollout spends reading the prompt, and how many passes the trainer uses to score the response. The LRT paper notes this mismatch itself (§4.6) and reduces it by starting the trainer from the rollout's cached states, and two earlier notes by one of us work through what it means for the policy gradient (<a href="https://zefancai.com/en/blog/lastkv-rl/">policy consistency</a>, <a href="https://zefancai.com/en/blog/ar-drift/">drift</a>); we summarize the argument <a href="#theory">below</a>. Here we measure it. Across our settings, the per-token log-probability gap between rollout and trainer runs from 0.004 to 0.073.</p>
 <p>Here is what we saw:</p>
 <ul class="findings">
   <li><strong>Plain GRPO trains only when both sides run enough passes.</strong> With at least 2 prefill passes and at least 3 training passes, which includes the default of 3 and 3, uncorrected GRPO trains through an epoch. In the other 10 of 16 settings it collapses. Matching the two pass counts is not enough: prefill 2 with a 2-pass trainer collapses too.</li>
@@ -123,8 +125,38 @@
 <p>Our model uses the paper's 20-layer configuration (width 1,280, 10 attention heads, 2,048-token context, 32,768-token vocabulary) with a mixture-of-experts MLP: 8 experts with 2 active per token, plus one shared expert. It follows the paper's pretraining recipe (the nanochat stack on FineWeb-Edu) for 18,887 steps with 3 passes, initialization plus 2 refinements. Fine-tuning keeps the same 3 passes and runs on OpenMathInstruct-2 (the 5M split) for 4,734 steps of 524,288 tokens. RL starts from that checkpoint.</p>
 <p><strong>How this differs from a looped transformer.</strong> A looped transformer such as <a href="https://thinkingmachines.ai/news/inkling-2-mini/">Inkling 2 Mini</a> recurs in depth: it runs its middle layers three times on the same token before emitting it. That costs more compute per token at inference, but training unrolls exactly the same loops, so rollouts and training compute the same function, up to the usual numerical noise. A recurrent transformer recurs across tokens instead. Ours pays for its extra passes only in training, and trains on an approximation of what it runs at inference. That approximation is the knob.</p>
 
+<h2 id="theory">What the mismatch should do to RL</h2>
+<p><strong>Before the measurements, here is what existing theory says to expect.</strong> Nothing in this section is new: the decomposition comes from the <a href="https://arxiv.org/abs/2609.20807">score-centering paper</a>, and applying it to a recurrent transformer follows an <a href="https://zefancai.com/en/blog/lastkv-rl/">earlier note</a> by one of us. It gives three predictions, and the rest of the post checks them.</p>
+<p><strong>Two policies share one set of weights.</strong> Call <em>q</em> the policy that generated a rollout (<em>P</em> prefill passes, then the exact recurrence) and <em>p</em> the policy the trainer recomputes on the recorded tokens (<em>K</em> parallel passes). RL wants the gradient of the rollout policy's expected reward <em>R</em>. The trainer differentiates through <em>p</em> instead:</p>
+<p class="eq"><span class="math" data-tex="\begin{aligned} \text{wanted}\quad & \mathbb{E}_{\tau\sim q}\big[R(\tau)\,\nabla_\theta\log q(\tau)\big] \\ \text{computed}\quad & \mathbb{E}_{\tau\sim q}\big[R(\tau)\,\nabla_\theta\log p(\tau)\big] \end{aligned}"></span></p>
+<p>The samples come from one policy and the gradient passes through the other. In a standard transformer the two are the same computation run in a different order, so they agree up to numerical noise. Here they agree only as far as the trainer's passes reproduce the recurrence: the trainer rereads the prompt with its own <em>K</em> passes, and its memory of the response reaches <em>K</em> − 1 positions back.</p>
+<p><strong>The mismatch adds a term that ignores which token was better.</strong> Fix a prefix and write <span data-tex="g(y) = \nabla_\theta \log p(y)"></span> for the score of the next token. Averaged over <em>p</em>, the score is zero, because probabilities sum to one. Averaged over <em>q</em>, it is not, and the update at that prefix splits in two:</p>
+<p class="eq"><span class="math" data-tex="\mathbb{E}_q[R\,g] \;=\; \underbrace{\mathbb{E}_q[R]\;\mathbb{E}_q[g]}_{\text{drift}} \;+\; \underbrace{\mathrm{Cov}_q(R,\,g)}_{\text{reward signal}}"></span></p>
+<p>The drift term depends on the reward only through its mean. It moves the weights by an amount set by the mismatch, the new weights produce the next rollouts, and the same term appears again, so it accumulates over updates. GRPO's advantage does not cancel it: subtracting the group's mean reward makes the advantages sum to zero over a problem's rollouts, not at each prefix.</p>
+<p><strong>Score centering removes that term and nothing else.</strong> SC replaces <span data-tex="g"></span> with <span data-tex="g - \mathbb{E}_q[g]"></span>, which deletes the drift term and keeps the covariance. It does not change how <em>p</em> or <em>q</em> is computed, so the two policies stay as far apart as before. What remains is a covariance under <em>q</em>, which is still not the exact gradient under <em>p</em>. Replay works from the other side: it hands the trainer the rollout's recurrent states, so <em>p</em> matches <em>q</em> in the forward pass, though the states enter as constants and no gradient flows through them.</p>
+<p>That gives three things to look for:</p>
+<ol>
+  <li><strong>A gap before any update.</strong> At identical weights, <em>p</em> and <em>q</em> should already give different probabilities to the same token, by an amount that shrinks as <em>K</em> grows and is smallest when <em>P</em> = <em>K</em> (<a href="#measure">Measuring the mismatch</a>).</li>
+  <li><strong>Uncorrected GRPO breaks where the gap is large.</strong> The theory does not say how large is too large; the runs put the line between 0.011 and 0.019 (<a href="#sync">Sync RL</a>).</li>
+  <li><strong>SC stabilizes training without closing the gap</strong>, and the same should hold when stale weights add to the mismatch (<a href="#sync">Sync RL</a>, <a href="#async">Async RL</a>).</li>
+</ol>
+<details>
+  <summary>A four-token example of why <em>K</em> passes are not the recurrence</summary>
+  <p>Take a recurrence with one number per token, <span data-tex="h_t = x_t + \tfrac{1}{2}\,h_{t-1}"></span>, and set every <span data-tex="x_t = 1"></span>. Run in order, each state builds on the finished state before it. Run in parallel, every position starts from <span data-tex="x_t"></span>, and each extra pass lets the feedback travel one position further.</p>
+  <table class="data">
+    <thead><tr><th>Position</th><th class="num">Exact recurrence</th><th class="num">2 passes</th><th class="num">3 passes</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+      <tr><td>2</td><td class="num">1.5</td><td class="num">1.5</td><td class="num">1.5</td></tr>
+      <tr><td>3</td><td class="num">1.75</td><td class="num bad">1.5</td><td class="num">1.75</td></tr>
+      <tr><td>4</td><td class="num">1.875</td><td class="num bad">1.5</td><td class="num bad">1.75</td></tr>
+    </tbody>
+  </table>
+  <p>With <em>K</em> passes the first <em>K</em> positions are exact and every later one stops at the <em>K</em>-th value. This illustrates the dependency structure; it is not a model experiment.</p>
+</details>
+
 <h2 id="measure">Measuring the mismatch</h2>
-<p><strong>On every training batch we log the gap, the mean absolute difference between the trainer's and the rollout's log-probability of each response token.</strong> A gap of 0.01 means the two are on average about 1% apart in the probability they give a token. We average it over the first 20 updates, long before any run collapses. Across the 16 settings it runs from 0.004 to 0.073. Runs with a correction start within about 12% of these values, so the early gap is a property of the setting, not of the loss: the figure below shows the same gaps under score centering (SC), a correction to the loss described in the next section.</p>
+<p><strong>On every training batch we log the gap, the mean absolute difference between the trainer's and the rollout's log-probability of each response token.</strong> A gap of 0.01 means the two are on average about 1% apart in the probability they give a token. We average it over the first 20 updates, long before any run collapses. Across the 16 settings it runs from 0.004 to 0.073. Runs with a correction start within about 12% of these values, so the early gap is a property of the setting, not of the loss: the figure below shows the same gaps under score centering (SC), the correction introduced above, whose loss is given in the next section.</p>
 </article>
 
 <figure class="wide" id="fig-gap">
@@ -140,7 +172,7 @@
   <li><strong>For a given trainer, the gap is smallest when the prefill uses the same number of passes.</strong> This holds in all four columns. More prefill passes than training passes do not help: with a 2-pass trainer the gap rises from 0.019 at prefill 2 to 0.023 at prefill 4.</li>
   <li><strong>A one-pass prefill keeps the gap at 0.036 or more, however many passes the trainer runs.</strong> The rollout read the prompt without memory, and no number of training passes reproduces that.</li>
   <li><strong>Replay almost closes the gap.</strong> Feeding the trainer the recurrent states the rollout actually produced, the fix proposed in the LRT paper, gives 0.003 in every row. We attribute what remains to numerical differences between the two code paths.</li>
-  <li><strong>Score centering leaves the gap where it is.</strong> With SC, the 16 early gaps are within 8% of the uncorrected ones (0.007 in the standard setting either way), and over the last 20 updates of the epoch they are still at 1.0–1.9 times their starting values. Yet none of the 16 SC runs collapsed, so SC does not work by shrinking the gap. It removes the drift term that the mismatch adds to the update and leaves the two paths as far apart as before; <a href="https://zefancai.com/en/blog/lastkv-rl/">this note</a> gives the decomposition.</li>
+  <li><strong>Score centering leaves the gap where it is.</strong> With SC, the 16 early gaps are within 8% of the uncorrected ones (0.007 in the standard setting either way), and over the last 20 updates of the epoch they are still at 1.0–1.9 times their starting values. Yet none of the 16 SC runs collapsed, so SC does not work by shrinking the gap. It removes the drift term that the mismatch adds to the update and leaves the two paths as far apart as before, as the <a href="#theory">decomposition above</a> predicts.</li>
 </ul>
 <p>The six settings at 0.010 or below, two or more prefill passes with three or more training passes, are the ones where uncorrected GRPO trains. The standard setting, prefill 3 with a 3-pass trainer, sits at 0.007.</p>
 
@@ -330,6 +362,6 @@
 <div class="tip" id="tip" role="status" aria-live="polite"></div>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script src="main.js?v=20261126a"></script>
+<script src="main.js?v=20261126b"></script>
 </body>
 </html>
