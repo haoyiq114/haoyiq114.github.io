@@ -42,11 +42,25 @@
     const nav = document.querySelector('.side-toc'), marker = document.querySelector('.toc-marker');
     const links = [...document.querySelectorAll('.side-toc a')];
     const heads = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    // narrow screens: fill the corner popover with the same entries
+    const fab = $('#toc-fab'), pop = $('#toc-pop'), btn = $('#toc-btn'), inlineToc = document.querySelector('nav.toc');
+    if (pop) pop.querySelector('ol').innerHTML = links.map(a => `<li><a href="${a.getAttribute('href')}">${a.textContent}</a></li>`).join('');
+    const popLinks = pop ? [...pop.querySelectorAll('a')] : [];
+    const setOpen = open => { if (!pop) return; pop.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
+    if (btn) {
+      btn.addEventListener('click', ev => { ev.stopPropagation(); setOpen(pop.hidden); if (!pop.hidden) (popLinks.find(a => a.classList.contains('active')) || popLinks[0]).focus({ preventScroll: true }); });
+      popLinks.forEach(a => a.addEventListener('click', () => setOpen(false)));
+      document.addEventListener('click', ev => { if (!pop.hidden && !fab.contains(ev.target)) setOpen(false); });
+      document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !pop.hidden) { setOpen(false); btn.focus(); } });
+    }
     let last = null;
     const update = () => {
       let cur = heads[0];
       heads.forEach(h => { if (h.getBoundingClientRect().top < window.innerHeight * 0.35) cur = h; });
       const act = links.find(a => a.getAttribute('href') === `#${cur.id}`);
+      popLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === `#${cur.id}`));
+      // the corner button appears once the inline contents box has scrolled away
+      if (fab && inlineToc) fab.classList.toggle('on', inlineToc.getBoundingClientRect().bottom < 0);
       links.forEach(a => { a.classList.toggle('active', a === act); if (a === act) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); });
       if (act && nav && marker && nav.offsetParent) {
         // centre the dot on the first line of the active entry
