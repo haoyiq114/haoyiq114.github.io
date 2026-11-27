@@ -279,7 +279,7 @@
 
 <figure class="wide xwide" id="fig-async">
   <p class="fig-title">How a stale run falls apart</p>
-  <p class="fig-sub">One panel per method; each line is one refresh interval. Click an interval to hide or show it, and click a panel to enlarge it. Rollout accuracy is measured on the stale rollout weights, so it moves in steps at each refresh.</p>
+  <p class="fig-sub">One panel per method; each line is one refresh interval. Click an interval to hide or show it, and click a panel to enlarge it. Training accuracy is the share of rollouts that are correct; the rollouts come from the stale weights, so it moves in steps at each refresh.</p>
   <div class="controls">
     <div><span class="group-label">Setting</span><div class="seg" id="as-setting" role="group" aria-label="Setting"></div></div>
     <div><span class="group-label">Metric</span><div class="seg" id="as-metric" role="group" aria-label="Metric"></div></div>
@@ -293,7 +293,7 @@
 </figure>
 
 <article class="col">
-<p>The training curves show how stale weights break a run. With refreshes every 64 updates, rollouts come from the starting model for the first 64 updates, so rollout accuracy stays near 59% while the trainer drifts. At the first refresh the uncorrected run falls to zero and TIS to about 15%. SC+TIS jumps to 77%, while SC and SC+KL+mask sit at about 50–65% for most of the run and reach 72–77% near the end. TIS fails on its own but helps on top of SC: SC+TIS is the only method that recovers right at the first refresh, in the stress setting as well. With refreshes every 16 updates, only the uncorrected run degrades, sliding from 68% to 18%.</p>
+<p>The training curves show how stale weights break a run. With refreshes every 64 updates, rollouts come from the starting model for the first 64 updates, so training accuracy stays near 59% while the trainer drifts. At the first refresh the uncorrected run falls to zero and TIS to about 15%. SC+TIS jumps to 77%, while SC and SC+KL+mask sit at about 50–65% for most of the run and reach 72–77% near the end. TIS fails on its own but helps on top of SC: SC+TIS is the only method that recovers right at the first refresh, in the stress setting as well. With refreshes every 16 updates, only the uncorrected run degrades, sliding from 68% to 18%.</p>
 </article>
 
 <figure class="wide" id="fig-lag">
